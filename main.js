@@ -1,4 +1,4 @@
-import { PaddleOcrService } from './src/index.js';
+import { PaddleOcrService, ModelManager } from './src/index.js';
 import * as ort from 'onnxruntime-web';
 
 class PaddleOCRClient {
@@ -58,7 +58,8 @@ class PaddleOCRClient {
 }
 
 export default PaddleOCRClient;
-export { PaddleOCRClient };
+export { PaddleOCRClient, ModelManager };
 if (typeof window !== 'undefined') {
   window.PaddleOCRClient = PaddleOCRClient;
+  window.ModelManager = ModelManager;
 }
