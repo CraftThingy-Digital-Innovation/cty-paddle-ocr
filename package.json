@@ -1,7 +1,15 @@
 {
   "name": "@craftthingy-digital-innovation/cty-paddle-ocr",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CraftThingy-Digital-Innovation/cty-paddle-ocr.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CraftThingy-Digital-Innovation/cty-paddle-ocr/issues"
+  },
+  "homepage": "https://github.com/CraftThingy-Digital-Innovation/cty-paddle-ocr#readme",
   "main": "./dist/paddle-ocr-client.umd.js",
   "module": "./dist/paddle-ocr-client.es.js",
   "exports": {
