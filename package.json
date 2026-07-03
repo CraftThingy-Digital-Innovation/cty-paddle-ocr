@@ -1,5 +1,5 @@
 {
-  "name": "cty-paddle-ocr",
+  "name": "@craftthingy-digital-innovation/cty-paddle-ocr",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/paddle-ocr-client.umd.js",

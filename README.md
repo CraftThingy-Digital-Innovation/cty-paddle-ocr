@@ -189,7 +189,7 @@ Kelas `ModelManager` disediakan untuk berinteraksi langsung dengan repositori mo
 *   Mengembalikan daftar seluruh berkas model (`.ort`, `.onnx`) dan dictionary (`.txt`) yang tersedia di repositori GitHub model Anda.
 *   **Contoh Penggunaan**:
     ```javascript
-    import { ModelManager } from 'cty-paddle-ocr';
+    import { ModelManager } from '@craftthingy-digital-innovation/cty-paddle-ocr';
     const models = await ModelManager.listAvailableModelsFromGithub();
     console.log(models); // [{ name: "PP-OCRv6_medium_det.ort", size: 62160320, downloadUrl: "..." }]
     ```
@@ -198,7 +198,7 @@ Kelas `ModelManager` disediakan untuk berinteraksi langsung dengan repositori mo
 *   Mengunduh berkas model tertentu dari GitHub LFS dan menyimpannya di folder server lokal secara offline. *(Hanya didukung di lingkungan Node.js)*.
 *   **Contoh Penggunaan**:
     ```javascript
-    import { ModelManager } from 'cty-paddle-ocr';
+    import { ModelManager } from '@craftthingy-digital-innovation/cty-paddle-ocr';
     await ModelManager.downloadModelFromGithub('PP-OCRv6_medium_det.ort', './public/models');
     ```
 
@@ -406,7 +406,7 @@ The `ModelManager` class provides native utilities to interact directly with you
 *   Returns a list of all model weights (`.ort`, `.onnx`) and vocabulary dictionaries (`.txt`) hosted in your GitHub models repository.
 *   **Usage Example**:
     ```javascript
-    import { ModelManager } from 'cty-paddle-ocr';
+    import { ModelManager } from '@craftthingy-digital-innovation/cty-paddle-ocr';
     const models = await ModelManager.listAvailableModelsFromGithub();
     console.log(models); // [{ name: "PP-OCRv6_medium_det.ort", size: 62160320, downloadUrl: "..." }]
     ```
@@ -415,7 +415,7 @@ The `ModelManager` class provides native utilities to interact directly with you
 *   Downloads a specific model file from GitHub LFS and saves it to a local storage path. *(Server-side Node.js environment only)*.
 *   **Usage Example**:
     ```javascript
-    import { ModelManager } from 'cty-paddle-ocr';
+    import { ModelManager } from '@craftthingy-digital-innovation/cty-paddle-ocr';
     await ModelManager.downloadModelFromGithub('PP-OCRv6_medium_det.ort', './public/models');
     ```
 
