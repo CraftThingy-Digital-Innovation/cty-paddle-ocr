@@ -3,25 +3,36 @@ export class ModelManager {
   static GITHUB_REPO = 'cty-paddle-ocr-models';
 
   /**
-   * Fetches the list of available model files and dictionaries in the GitHub models repository.
+   * Fetches the list of all available model files and dictionaries in the GitHub models repository recursively.
    * Works in both Web Browser and Node.js environments.
    */
   static async listAvailableModelsFromGithub() {
     try {
-      const response = await fetch(`https://api.github.com/repos/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/contents/`);
+      // Use the Git Trees API with recursive=1 to get all files in all subfolders in a single call
+      const response = await fetch(`https://api.github.com/repos/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/git/trees/main?recursive=1`);
       if (!response.ok) {
-        throw new Error(`Failed to fetch models list from GitHub: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch models tree from GitHub: ${response.status} ${response.statusText}`);
       }
-      const files = await response.json();
-      return files
-        .filter(f => f.type === 'file' && (f.name.endsWith('.onnx') || f.name.endsWith('.ort') || f.name.endsWith('.txt')))
-        .map(f => ({
-          name: f.name,
-          size: f.size,
-          downloadUrl: `https://media.githubusercontent.com/media/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/main/${f.name}`
-        }));
+      const data = await response.json();
+      if (!data.tree) return [];
+
+      return data.tree
+        .filter(f => f.type === 'blob' && (f.path.endsWith('.onnx') || f.path.endsWith('.ort') || f.path.endsWith('.txt')))
+        .map(f => {
+          const isTxt = f.path.endsWith('.txt');
+          const baseUrl = isTxt 
+            ? `https://raw.githubusercontent.com/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/main`
+            : `https://media.githubusercontent.com/media/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/main`;
+
+          return {
+            path: f.path,
+            name: f.path.split('/').pop(),
+            size: f.size,
+            downloadUrl: `${baseUrl}/${f.path}`
+          };
+        });
     } catch (error) {
-      console.error("Error listing models from GitHub:", error);
+      console.error("Error listing models from GitHub recursively:", error);
       throw error;
     }
   }
@@ -30,7 +41,7 @@ export class ModelManager {
    * Downloads a model asset directly from the GitHub repository and saves it to a local folder.
    * Node.js (Server-side) environment only.
    */
-  static async downloadModelFromGithub(fileName, destFolder) {
+  static async downloadModelFromGithub(filePathOrName, destFolder) {
     if (typeof window !== 'undefined') {
       throw new Error("downloadModelFromGithub is only supported on Node.js/Server-side.");
     }
@@ -41,7 +52,25 @@ export class ModelManager {
     const { Readable } = await import('stream');
     const { finished } = await import('stream/promises');
 
-    const downloadUrl = `https://media.githubusercontent.com/media/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/main/${fileName}`;
+    let remotePath = filePathOrName;
+    const fileName = filePathOrName.split('/').pop();
+
+    // If only filename is provided, look up the full remote path recursively from GitHub first
+    if (!filePathOrName.includes('/')) {
+      const models = await this.listAvailableModelsFromGithub();
+      const match = models.find(m => m.name === filePathOrName);
+      if (!match) {
+        throw new Error(`Model file "${filePathOrName}" not found in GitHub repository.`);
+      }
+      remotePath = match.path;
+    }
+
+    const isTxt = remotePath.endsWith('.txt');
+    const baseUrl = isTxt 
+      ? `https://raw.githubusercontent.com/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/main`
+      : `https://media.githubusercontent.com/media/${this.GITHUB_OWNER}/${this.GITHUB_REPO}/main`;
+
+    const downloadUrl = `${baseUrl}/${remotePath}`;
     const targetPath = path.join(destFolder, fileName);
 
     // Create target directory if missing
@@ -49,7 +78,7 @@ export class ModelManager {
       fs.mkdirSync(destFolder, { recursive: true });
     }
 
-    console.log(`[ModelManager] Downloading ${fileName} from GitHub LFS: ${downloadUrl}`);
+    console.log(`[ModelManager] Downloading ${remotePath} from GitHub: ${downloadUrl}`);
     const response = await fetch(downloadUrl);
     if (!response.ok) {
       throw new Error(`Failed to download model from GitHub: ${response.status} ${response.statusText}`);

@@ -181,6 +181,46 @@ async function scanPdfPage(pdfUrl, pageNum) {
 
 ---
 
+### 6. ModelManager API
+
+Kelas `ModelManager` disediakan untuk berinteraksi langsung dengan repositori model resmi Anda di GitHub.
+
+#### **`static async listAvailableModelsFromGithub()`**
+*   Mengembalikan daftar seluruh berkas model (`.ort`, `.onnx`) dan dictionary (`.txt`) yang tersedia di repositori GitHub model Anda.
+*   **Contoh Penggunaan**:
+    ```javascript
+    import { ModelManager } from 'cty-paddle-ocr';
+    const models = await ModelManager.listAvailableModelsFromGithub();
+    console.log(models); // [{ name: "PP-OCRv6_medium_det.ort", size: 62160320, downloadUrl: "..." }]
+    ```
+
+#### **`static async downloadModelFromGithub(fileName, destFolder)`**
+*   Mengunduh berkas model tertentu dari GitHub LFS dan menyimpannya di folder server lokal secara offline. *(Hanya didukung di lingkungan Node.js)*.
+*   **Contoh Penggunaan**:
+    ```javascript
+    import { ModelManager } from 'cty-paddle-ocr';
+    await ModelManager.downloadModelFromGithub('PP-OCRv6_medium_det.ort', './public/models');
+    ```
+
+---
+
+### 7. Panduan Performa & Optimasi (Performance Guide)
+
+#### **A. Format Berkas Model (`.ort` vs `.onnx`)**
+*   **Sangat Direkomendasikan**: Gunakan model format `.ort` (FlatBuffers) untuk lingkungan browser.
+*   Format `.ort` menonaktifkan optimasi grafis runtime bawaan ONNX (`graphOptimizationLevel: 'disabled'`) sehingga memangkas waktu inisialisasi awal di browser hingga 3-5x lebih cepat dibanding `.onnx`.
+
+#### **B. WASM Multithreading**
+*   Untuk mengaktifkan akselerasi multi-core di browser, konfigurasikan server web Anda (seperti Apache/Nginx/CodeIgniter) untuk mengirimkan header HTTP berikut:
+    ```http
+    Cross-Origin-Opener-Policy: same-origin
+    Cross-Origin-Embedder-Policy: require-corp
+    ```
+*   Setel variabel lingkungan ONNX di JavaScript sebelum memproses gambar:
+    ```javascript
+    ort.env.wasm.numThreads = navigator.hardwareConcurrency || 4;
+    ```
+
 ## English
 
 This project is **cty-paddle-ocr**, a lightweight, high-performance, standalone PaddleOCR SDK designed for **isomorphic** execution (running anywhere JavaScript runs: Web browsers using WebAssembly and Node.js servers).
@@ -360,48 +400,6 @@ async function scanPdfPage(pdfUrl, pageNum) {
 
 ### 6. ModelManager API
 
-Kelas `ModelManager` disediakan untuk berinteraksi langsung dengan repositori model resmi Anda di GitHub.
-
-#### **`static async listAvailableModelsFromGithub()`**
-*   Mengembalikan daftar seluruh berkas model (`.ort`, `.onnx`) dan dictionary (`.txt`) yang tersedia di repositori GitHub model Anda.
-*   **Contoh Penggunaan**:
-    ```javascript
-    import { ModelManager } from 'cty-paddle-ocr';
-    const models = await ModelManager.listAvailableModelsFromGithub();
-    console.log(models); // [{ name: "PP-OCRv6_medium_det.ort", size: 62160320, downloadUrl: "..." }]
-    ```
-
-#### **`static async downloadModelFromGithub(fileName, destFolder)`**
-*   Mengunduh berkas model tertentu dari GitHub LFS dan menyimpannya di folder server lokal secara offline. *(Hanya didukung di lingkungan Node.js)*.
-*   **Contoh Penggunaan**:
-    ```javascript
-    import { ModelManager } from 'cty-paddle-ocr';
-    await ModelManager.downloadModelFromGithub('PP-OCRv6_medium_det.ort', './public/models');
-    ```
-
----
-
-### 7. Panduan Performa & Optimasi (Performance Guide)
-
-#### **A. Format Berkas Model (`.ort` vs `.onnx`)**
-*   **Sangat Direkomendasikan**: Gunakan model format `.ort` (FlatBuffers) untuk lingkungan browser.
-*   Format `.ort` menonaktifkan optimasi grafis runtime bawaan ONNX (`graphOptimizationLevel: 'disabled'`) sehingga memangkas waktu inisialisasi awal di browser hingga 3-5x lebih cepat dibanding `.onnx`.
-
-#### **B. WASM Multithreading**
-*   Untuk mengaktifkan akselerasi multi-core di browser, konfigurasikan server web Anda (seperti Apache/Nginx/CodeIgniter) untuk mengirimkan header HTTP berikut:
-    ```http
-    Cross-Origin-Opener-Policy: same-origin
-    Cross-Origin-Embedder-Policy: require-corp
-    ```
-*   Setel variabel lingkungan ONNX di JavaScript sebelum memproses gambar:
-    ```javascript
-    ort.env.wasm.numThreads = navigator.hardwareConcurrency || 4;
-    ```
-
----
-
-### 6. English: ModelManager API
-
 The `ModelManager` class provides native utilities to interact directly with your official models repository on GitHub.
 
 #### **`static async listAvailableModelsFromGithub()`**
@@ -423,7 +421,7 @@ The `ModelManager` class provides native utilities to interact directly with you
 
 ---
 
-### 7. English: Performance & Optimization Guide
+### 7. Performance & Optimization Guide
 
 #### **A. Model File Formats (`.ort` vs `.onnx`)**
 *   **Highly Recommended**: Use the `.ort` format (FlatBuffers serialized graph) in client-side web browsers.
@@ -439,8 +437,6 @@ The `ModelManager` class provides native utilities to interact directly with you
     ```javascript
     ort.env.wasm.numThreads = navigator.hardwareConcurrency || 4;
     ```
-
----
 
 ## Asal Usul & Kredit / Origins & Credits
 
