@@ -1,21 +1,21 @@
 var W = Object.defineProperty;
-var G = (s, e, t) => e in s ? W(s, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[e] = t;
-var m = (s, e, t) => G(s, typeof e != "symbol" ? e + "" : e, t);
+var G = (a, t, e) => t in a ? W(a, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[t] = e;
+var m = (a, t, e) => G(a, typeof t != "symbol" ? t + "" : t, e);
 import * as T from "onnxruntime-node";
 import l from "@techstark/opencv-js";
 import "onnxruntime-web";
-function A(s, e) {
-  const t = typeof e == "string" && e.toLowerCase().includes("utf-8") || typeof e == "object" && e.encoding && e.encoding.toLowerCase().includes("utf-8"), r = new XMLHttpRequest();
-  if (r.open("GET", s, !1), t) {
-    if (r.send(), r.status !== 200 && r.status !== 0)
-      throw new Error(`Failed to read text file at ${s}: HTTP ${r.status}`);
-    return r.responseText;
+function A(a, t) {
+  const e = typeof t == "string" && t.toLowerCase().includes("utf-8") || typeof t == "object" && t.encoding && t.encoding.toLowerCase().includes("utf-8"), i = new XMLHttpRequest();
+  if (i.open("GET", a, !1), e) {
+    if (i.send(), i.status !== 200 && i.status !== 0)
+      throw new Error(`Failed to read text file at ${a}: HTTP ${i.status}`);
+    return i.responseText;
   } else {
-    if (r.overrideMimeType("text/plain; charset=x-user-defined"), r.send(), r.status !== 200 && r.status !== 0)
-      throw new Error(`Failed to read binary file at ${s}: HTTP ${r.status}`);
-    const i = r.responseText, o = i.length, n = new Uint8Array(o);
-    for (let a = 0; a < o; a++)
-      n[a] = i.charCodeAt(a) & 255;
+    if (i.overrideMimeType("text/plain; charset=x-user-defined"), i.send(), i.status !== 200 && i.status !== 0)
+      throw new Error(`Failed to read binary file at ${a}: HTTP ${i.status}`);
+    const r = i.responseText, o = r.length, n = new Uint8Array(o);
+    for (let s = 0; s < o; s++)
+      n[s] = r.charCodeAt(s) & 255;
     return {
       buffer: n.buffer,
       byteLength: n.byteLength
@@ -24,8 +24,8 @@ function A(s, e) {
 }
 function k() {
   return {
-    write(s, e) {
-      return typeof e == "function" && e(), !0;
+    write(a, t) {
+      return typeof t == "function" && t(), !0;
     },
     end() {
     },
@@ -33,43 +33,43 @@ function k() {
     }
   };
 }
-function L(...s) {
-  const e = s[s.length - 1];
-  return typeof e == "string" && (e.startsWith("http://") || e.startsWith("https://") || e.startsWith("/")), e;
+function L(...a) {
+  const t = a[a.length - 1];
+  return typeof t == "string" && (t.startsWith("http://") || t.startsWith("https://") || t.startsWith("/")), t;
 }
-function E(...s) {
-  return s.some((e) => typeof e == "string" && (e.startsWith("http://") || e.startsWith("https://"))) ? s.join("/") : s.join("/").replace(/\/+/g, "/");
+function E(...a) {
+  return a.some((t) => typeof t == "string" && (t.startsWith("http://") || t.startsWith("https://"))) ? a.join("/") : a.join("/").replace(/\/+/g, "/");
 }
-function V(s) {
-  if (typeof s == "string" && (s.startsWith("http://") || s.startsWith("https://")))
+function V(a) {
+  if (typeof a == "string" && (a.startsWith("http://") || a.startsWith("https://")))
     try {
-      const e = new URL(s), t = e.pathname, r = t.substring(0, t.lastIndexOf("/"));
-      return e.origin + (r || "/");
+      const t = new URL(a), e = t.pathname, i = e.substring(0, e.lastIndexOf("/"));
+      return t.origin + (i || "/");
     } catch {
-      return s.substring(0, s.lastIndexOf("/")) || ".";
+      return a.substring(0, a.lastIndexOf("/")) || ".";
     }
-  return s.substring(0, s.lastIndexOf("/")) || ".";
+  return a.substring(0, a.lastIndexOf("/")) || ".";
 }
 const P = { resolve: L, join: E, dirname: V }, M = typeof HTMLCanvasElement < "u" ? HTMLCanvasElement : class {
 };
-function D(s, e) {
-  const t = document.createElement("canvas");
-  return t.width = s, t.height = e, t;
+function D(a, t) {
+  const e = document.createElement("canvas");
+  return e.width = a, e.height = t, e;
 }
-function j(s) {
-  return typeof HTMLImageElement < "u" && s instanceof HTMLImageElement ? s.complete ? Promise.resolve(s) : new Promise((e, t) => {
-    s.onload = () => e(s), s.onerror = (r) => t(new Error("Failed to load image element: " + r.message));
-  }) : typeof HTMLCanvasElement < "u" && s instanceof HTMLCanvasElement ? Promise.resolve(s) : new Promise((e, t) => {
-    const r = new Image();
-    if (r.crossOrigin = "anonymous", r.onload = () => {
-      typeof s == "object" && r.src.startsWith("blob:") && URL.revokeObjectURL(r.src), e(r);
-    }, r.onerror = (i) => t(new Error("Failed to load image source: " + i.message)), s instanceof Blob || s instanceof File)
-      r.src = URL.createObjectURL(s);
-    else if (s instanceof ArrayBuffer || ArrayBuffer.isView(s)) {
-      const i = new Blob([s]);
-      r.src = URL.createObjectURL(i);
+function j(a) {
+  return typeof HTMLImageElement < "u" && a instanceof HTMLImageElement ? a.complete ? Promise.resolve(a) : new Promise((t, e) => {
+    a.onload = () => t(a), a.onerror = (i) => e(new Error("Failed to load image element: " + i.message));
+  }) : typeof HTMLCanvasElement < "u" && a instanceof HTMLCanvasElement ? Promise.resolve(a) : new Promise((t, e) => {
+    const i = new Image();
+    if (i.crossOrigin = "anonymous", i.onload = () => {
+      typeof a == "object" && i.src.startsWith("blob:") && URL.revokeObjectURL(i.src), t(i);
+    }, i.onerror = (r) => e(new Error("Failed to load image source: " + r.message)), a instanceof Blob || a instanceof File)
+      i.src = URL.createObjectURL(a);
+    else if (a instanceof ArrayBuffer || ArrayBuffer.isView(a)) {
+      const r = new Blob([a]);
+      i.src = URL.createObjectURL(r);
     } else
-      r.src = s;
+      i.src = a;
   });
 }
 class X {
@@ -77,137 +77,137 @@ class X {
     m(this, "operations", /* @__PURE__ */ new Map());
     m(this, "defaultOptions", /* @__PURE__ */ new Map());
   }
-  register(e, t, r) {
-    this.operations.set(e, t), r && this.defaultOptions.set(e, r);
+  register(t, e, i) {
+    this.operations.set(t, e), i && this.defaultOptions.set(t, i);
   }
-  getOperation(e) {
-    return this.operations.get(e);
+  getOperation(t) {
+    return this.operations.get(t);
   }
-  getDefaultOptionsGenerator(e) {
-    return this.defaultOptions.get(e) || {};
+  getDefaultOptionsGenerator(t) {
+    return this.defaultOptions.get(t) || {};
   }
-  hasOperation(e) {
-    return this.operations.has(e);
+  hasOperation(t) {
+    return this.operations.has(t);
   }
   getOperationNames() {
     return Array.from(this.operations.keys());
   }
 }
-let x = new X();
-function K(s, e, t) {
-  let r = x.getOperation(s);
-  if (!r)
-    throw new Error(`Operation "${s}" not found in registry`);
-  let i = x.getDefaultOptionsGenerator(s), n = { ...(typeof i == "function" ? i : () => ({}))(), ...t };
-  return r(e, n);
+let y = new X();
+function K(a, t, e) {
+  let i = y.getOperation(a);
+  if (!i)
+    throw new Error(`Operation "${a}" not found in registry`);
+  let r = y.getDefaultOptionsGenerator(a), n = { ...(typeof r == "function" ? r : () => ({}))(), ...e };
+  return i(t, n);
 }
-function q() {
+function Y() {
   return { upper: 255, method: l.ADAPTIVE_THRESH_GAUSSIAN_C, type: l.THRESH_BINARY_INV, size: 7, constant: 2 };
 }
-function Y(s, e) {
-  let t = new l.Mat();
-  return l.adaptiveThreshold(s, t, e.upper, e.method, e.type, e.size, e.constant), s.delete(), { img: t, width: t.cols, height: t.rows };
+function q(a, t) {
+  let e = new l.Mat();
+  return l.adaptiveThreshold(a, e, t.upper, t.method, t.type, t.size, t.constant), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("adaptiveThreshold", Y, q);
+y.register("adaptiveThreshold", q, Y);
 function J() {
   return { size: [5, 5], sigma: 0 };
 }
-function Q(s, e) {
-  let t = new l.Mat();
-  return l.GaussianBlur(s, t, new l.Size(e.size[0], e.size[1]), e.sigma), s.delete(), { img: t, width: t.cols, height: t.rows };
+function Q(a, t) {
+  let e = new l.Mat();
+  return l.GaussianBlur(a, e, new l.Size(t.size[0], t.size[1]), t.sigma), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("blur", Q, J);
+y.register("blur", Q, J);
 function Z() {
   return { size: 10, borderType: l.BORDER_CONSTANT, borderColor: [255, 255, 255, 255] };
 }
-function ee(s, e) {
-  let t = new l.Mat();
-  return l.copyMakeBorder(s, t, e.size, e.size, e.size, e.size, e.borderType, e.borderColor), s.delete(), { img: t, width: t.cols, height: t.rows };
+function tt(a, t) {
+  let e = new l.Mat();
+  return l.copyMakeBorder(a, e, t.size, t.size, t.size, t.size, t.borderType, t.borderColor), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("border", ee, Z);
-function te() {
+y.register("border", tt, Z);
+function et() {
   return { lower: 50, upper: 150 };
 }
-function re(s, e) {
-  let t = new l.Mat();
-  return l.Canny(s, t, e.lower, e.upper), s.delete(), { img: t, width: t.cols, height: t.rows };
+function it(a, t) {
+  let e = new l.Mat();
+  return l.Canny(a, e, t.lower, t.upper), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("canny", re, te);
-function ie(s, e) {
-  if (e.rtype === void 0)
+y.register("canny", it, et);
+function rt(a, t) {
+  if (t.rtype === void 0)
     throw new Error("Invalid options: rtype is required");
-  let t = new l.Mat();
-  return s.convertTo(t, e.rtype), s.delete(), { img: t, width: t.cols, height: t.rows };
+  let e = new l.Mat();
+  return a.convertTo(e, t.rtype), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("convert", ie);
-function ne() {
+y.register("convert", rt);
+function nt() {
   return { size: [5, 5], iter: 1 };
 }
-function oe(s, e) {
-  let t = new l.Mat(), r = l.getStructuringElement(l.MORPH_RECT, new l.Size(e.size[0], e.size[1]));
-  return l.dilate(s, t, r, new l.Point(-1, -1), e.iter), s.delete(), { img: t, width: t.cols, height: t.rows };
+function ot(a, t) {
+  let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
+  return l.dilate(a, e, i, new l.Point(-1, -1), t.iter), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("dilate", oe, ne);
-function se() {
+y.register("dilate", ot, nt);
+function st() {
   return { size: [5, 5], iter: 1 };
 }
-function ae(s, e) {
-  let t = new l.Mat(), r = l.getStructuringElement(l.MORPH_RECT, new l.Size(e.size[0], e.size[1]));
-  return l.erode(s, t, r, new l.Point(-1, -1), e.iter), s.delete(), { img: t, width: t.cols, height: t.rows };
+function at(a, t) {
+  let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
+  return l.erode(a, e, i, new l.Point(-1, -1), t.iter), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("erode", ae, se);
-function le() {
+y.register("erode", at, st);
+function lt() {
   return {};
 }
-function ce(s, e) {
-  let t = new l.Mat();
-  return l.cvtColor(s, t, l.COLOR_RGBA2GRAY), s.delete(), { img: t, width: t.cols, height: t.rows };
+function ht(a, t) {
+  let e = new l.Mat();
+  return l.cvtColor(a, e, l.COLOR_RGBA2GRAY), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("grayscale", ce, le);
-function he() {
+y.register("grayscale", ht, lt);
+function ct() {
   return {};
 }
-function de(s, e) {
-  let t = new l.Mat();
-  return l.bitwise_not(s, t), s.delete(), { img: t, width: t.cols, height: t.rows };
+function dt(a, t) {
+  let e = new l.Mat();
+  return l.bitwise_not(a, e), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("invert", de, he);
-function ge() {
+y.register("invert", dt, ct);
+function gt() {
   return { size: [3, 3] };
 }
-function ue(s, e) {
-  let t = new l.Mat(), r = l.getStructuringElement(l.MORPH_RECT, new l.Size(e.size[0], e.size[1]));
-  return l.morphologyEx(s, t, l.MORPH_GRADIENT, r), s.delete(), { img: t, width: t.cols, height: t.rows };
+function ut(a, t) {
+  let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
+  return l.morphologyEx(a, e, l.MORPH_GRADIENT, i), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("morphologicalGradient", ue, ge);
-function fe(s, e) {
-  if (!e.width || !e.height)
+y.register("morphologicalGradient", ut, gt);
+function ft(a, t) {
+  if (!t.width || !t.height)
     throw new Error("Invalid options: width and height are required");
-  let t = new l.Mat();
-  return l.resize(s, t, new l.Size(e.width, e.height)), s.delete(), { img: t, width: t.cols, height: t.rows };
+  let e = new l.Mat();
+  return l.resize(a, e, new l.Size(t.width, t.height)), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("resize", fe);
-function pe(s, e) {
-  let t = e.center || new l.Point(s.cols / 2, s.rows / 2), r = l.getRotationMatrix2D(t, e.angle, 1), i = new l.Size(s.cols, s.rows), o = new l.Mat();
-  return l.warpAffine(s, o, r, i, l.INTER_LINEAR, l.BORDER_CONSTANT, new l.Scalar()), s.delete(), r.delete(), { img: o, width: o.cols, height: o.rows };
+y.register("resize", ft);
+function pt(a, t) {
+  let e = t.center || new l.Point(a.cols / 2, a.rows / 2), i = l.getRotationMatrix2D(e, t.angle, 1), r = new l.Size(a.cols, a.rows), o = new l.Mat();
+  return l.warpAffine(a, o, i, r, l.INTER_LINEAR, l.BORDER_CONSTANT, new l.Scalar()), a.delete(), i.delete(), { img: o, width: o.cols, height: o.rows };
 }
-x.register("rotate", pe);
-function me() {
+y.register("rotate", pt);
+function mt() {
   return { lower: 0, upper: 255, type: l.THRESH_BINARY_INV + l.THRESH_OTSU };
 }
-function we(s, e) {
-  let t = new l.Mat();
-  return l.threshold(s, t, e.lower, e.upper, e.type), s.delete(), { img: t, width: t.cols, height: t.rows };
+function wt(a, t) {
+  let e = new l.Mat();
+  return l.threshold(a, e, t.lower, t.upper, t.type), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-x.register("threshold", we, me);
-function ye(s, e) {
-  if (!e.points || !e.bbox)
+y.register("threshold", wt, mt);
+function xt(a, t) {
+  if (!t.points || !t.bbox)
     throw new Error("Invalid options: points and bbox are required");
-  const { points: t, bbox: r } = e;
-  let i = new l.Mat(), o = r.x1 - r.x0, n = r.y1 - r.y0, a = [0, 0, o - 1, 0, o - 1, n - 1, 0, n - 1], c = [t.topLeft.x, t.topLeft.y, t.topRight.x, t.topRight.y, t.bottomRight.x, t.bottomRight.y, t.bottomLeft.x, t.bottomLeft.y], d = l.matFromArray(4, 1, l.CV_32FC2, a), h = l.matFromArray(4, 1, l.CV_32FC2, c), g = l.getPerspectiveTransform(h, d), u = new l.Size(o, n);
-  return l.warpPerspective(s, i, g, u), g.delete(), h.delete(), d.delete(), s.delete(), { img: i, width: i.cols, height: i.rows };
+  const { points: e, bbox: i } = t;
+  let r = new l.Mat(), o = i.x1 - i.x0, n = i.y1 - i.y0, s = [0, 0, o - 1, 0, o - 1, n - 1, 0, n - 1], h = [e.topLeft.x, e.topLeft.y, e.topRight.x, e.topRight.y, e.bottomRight.x, e.bottomRight.y, e.bottomLeft.x, e.bottomLeft.y], d = l.matFromArray(4, 1, l.CV_32FC2, s), c = l.matFromArray(4, 1, l.CV_32FC2, h), g = l.getPerspectiveTransform(c, d), u = new l.Size(o, n);
+  return l.warpPerspective(a, r, g, u), g.delete(), c.delete(), d.delete(), a.delete(), { img: r, width: r.cols, height: r.rows };
 }
-x.register("warp", ye);
+y.register("warp", xt);
 const C = class C {
   constructor() {
     m(this, "step", 0);
@@ -215,63 +215,63 @@ const C = class C {
   static getInstance() {
     return C.instance || (C.instance = new C()), C.instance;
   }
-  crop(e) {
-    const { bbox: t, canvas: r } = e;
-    let i = D(t.x1 - t.x0, t.y1 - t.y0);
-    return i.getContext("2d").drawImage(r, t.x0, t.y0, t.x1 - t.x0, t.y1 - t.y0, 0, 0, i.width, i.height), i;
+  crop(t) {
+    const { bbox: e, canvas: i } = t;
+    let r = D(e.x1 - e.x0, e.y1 - e.y0);
+    return r.getContext("2d").drawImage(i, e.x0, e.y0, e.x1 - e.x0, e.y1 - e.y0, 0, 0, r.width, r.height), r;
   }
-  isDirty(e) {
-    const { canvas: t, threshold: r = 127.5, majorColorThreshold: i = 0.97 } = e;
-    let o = 0, n = 0, a = this.crop({ bbox: { x0: t.width * 0.1, y0: t.height * 0.1, x1: t.width * 0.9, y1: t.height * 0.9 }, canvas: t }), d = a.getContext("2d").getImageData(0, 0, a.width, a.height).data;
+  isDirty(t) {
+    const { canvas: e, threshold: i = 127.5, majorColorThreshold: r = 0.97 } = t;
+    let o = 0, n = 0, s = this.crop({ bbox: { x0: e.width * 0.1, y0: e.height * 0.1, x1: e.width * 0.9, y1: e.height * 0.9 }, canvas: e }), d = s.getContext("2d").getImageData(0, 0, s.width, s.height).data;
     for (let g = 0; g < d.length; g += 4) {
-      let u = d[g], p = d[g + 1], f = d[g + 2];
-      u >= r && p >= r && f >= r ? o++ : n++;
+      let u = d[g], f = d[g + 1], p = d[g + 2];
+      u >= i && f >= i && p >= i ? o++ : n++;
     }
-    return Math.max(o, n) / (n + o) < i;
+    return Math.max(o, n) / (n + o) < r;
   }
-  saveImage(e) {
-    const { canvas: t, filename: r, path: i = "out" } = e;
-    let o = E(process.cwd(), i);
-    E(o, `${this.step++}. ${r}.png`);
-    let n = k(), a = t.toBuffer("image/png");
-    return new Promise((c, d) => {
-      n.write(a, (h) => {
-        h ? d(h) : c();
+  saveImage(t) {
+    const { canvas: e, filename: i, path: r = "out" } = t;
+    let o = E(process.cwd(), r);
+    E(o, `${this.step++}. ${i}.png`);
+    let n = k(), s = e.toBuffer("image/png");
+    return new Promise((h, d) => {
+      n.write(s, (c) => {
+        c ? d(c) : h();
       });
     });
   }
-  clearOutput(e = "out") {
-    E(process.cwd(), e);
+  clearOutput(t = "out") {
+    E(process.cwd(), t);
   }
-  drawLine(e) {
-    const { ctx: t, x: r, y: i, width: o, height: n, lineWidth: a = 2, color: c = "blue" } = e;
-    t.beginPath(), t.strokeStyle = c, t.lineWidth = a, t.strokeRect(r, i, o, n), t.closePath();
+  drawLine(t) {
+    const { ctx: e, x: i, y: r, width: o, height: n, lineWidth: s = 2, color: h = "blue" } = t;
+    e.beginPath(), e.strokeStyle = h, e.lineWidth = s, e.strokeRect(i, r, o, n), e.closePath();
   }
-  drawContour(e) {
-    const { ctx: t, contour: r, strokeStyle: i = "red", lineWidth: o = 2 } = e;
-    let n = r.data32S;
+  drawContour(t) {
+    const { ctx: e, contour: i, strokeStyle: r = "red", lineWidth: o = 2 } = t;
+    let n = i.data32S;
     if (!(n.length < 4)) {
-      t.strokeStyle = i, t.lineWidth = o, t.beginPath(), t.moveTo(n[0], n[1]);
-      for (let a = 2; a < n.length; a += 2)
-        t.lineTo(n[a], n[a + 1]);
-      t.closePath(), t.stroke();
+      e.strokeStyle = r, e.lineWidth = o, e.beginPath(), e.moveTo(n[0], n[1]);
+      for (let s = 2; s < n.length; s += 2)
+        e.lineTo(n[s], n[s + 1]);
+      e.closePath(), e.stroke();
     }
   }
 };
 m(C, "instance", null);
-let O = C;
-class xe {
-  constructor(e, t = {}) {
+let R = C;
+class yt {
+  constructor(t, e = {}) {
     m(this, "contours");
-    let r = { ...be(), ...t };
-    if (e instanceof l.Mat) {
-      let i = new l.MatVector(), o = new l.Mat();
+    let i = { ...bt(), ...e };
+    if (t instanceof l.Mat) {
+      let r = new l.MatVector(), o = new l.Mat();
       try {
-        l.findContours(e, i, o, r.mode, r.method);
+        l.findContours(t, r, o, i.mode, i.method);
       } catch (n) {
         throw n;
       }
-      o.delete(), this.contours = i;
+      o.delete(), this.contours = r;
     } else
       throw new Error("Invalid img type. Must be cv.Mat.");
   }
@@ -281,43 +281,43 @@ class xe {
   getSize() {
     return this.contours.size();
   }
-  getFromIndex(e) {
-    return e < this.contours.size() ? this.contours.get(e) : new l.Mat();
+  getFromIndex(t) {
+    return t < this.contours.size() ? this.contours.get(t) : new l.Mat();
   }
-  getRect(e) {
-    return l.boundingRect(e);
+  getRect(t) {
+    return l.boundingRect(t);
   }
-  iterate(e) {
-    for (let t = 0, r = this.contours.size(); t < r; t++) {
-      let i = this.contours.get(t);
-      e(i);
+  iterate(t) {
+    for (let e = 0, i = this.contours.size(); e < i; e++) {
+      let r = this.contours.get(e);
+      t(r);
     }
     return this;
   }
   getLargestContourArea() {
-    let e = 0, t = null;
-    return this.iterate((r) => {
-      let i = l.contourArea(r);
-      i > e && (e = i, t = r);
-    }), t;
+    let t = 0, e = null;
+    return this.iterate((i) => {
+      let r = l.contourArea(i);
+      r > t && (t = r, e = i);
+    }), e;
   }
-  getCornerPoints(e) {
-    const { canvas: t, contour: r = this.getLargestContourArea() } = e;
-    let i = { x0: 0, y0: 0, x1: t.width, y1: t.height };
-    if (!r)
-      return { points: { topLeft: { x: i.x0, y: i.y0 }, topRight: { x: i.x1, y: i.y0 }, bottomLeft: { x: i.x0, y: i.y1 }, bottomRight: { x: i.x1, y: i.y1 } }, bbox: i };
-    let o = l.minAreaRect(r), n = l.RotatedRect.points(o), a = { topLeft: { x: 0, y: 0 }, topRight: { x: 0, y: 0 }, bottomRight: { x: 0, y: 0 }, bottomLeft: { x: 0, y: 0 } }, c = n.map((w) => w.x + w.y), d = n.map((w) => w.y - w.x), h = c.indexOf(Math.min(...c)), g = d.indexOf(Math.min(...d)), u = c.indexOf(Math.max(...c)), p = d.indexOf(Math.max(...d));
-    if (!n[h] || !n[g] || !n[u] || !n[p])
-      return { points: { topLeft: { x: i.x0, y: i.y0 }, topRight: { x: i.x1, y: i.y0 }, bottomLeft: { x: i.x0, y: i.y1 }, bottomRight: { x: i.x1, y: i.y1 } }, bbox: i };
-    a.topLeft = { x: n[h].x, y: n[h].y }, a.topRight = { x: n[g].x, y: n[g].y }, a.bottomRight = { x: n[u].x, y: n[u].y }, a.bottomLeft = { x: n[p].x, y: n[p].y }, r.delete();
-    let f = (w) => (w.x = Math.max(0, Math.min(t.width, w.x)), w.y = Math.max(0, Math.min(t.height, w.y)), w);
-    return a.topLeft = f(a.topLeft), a.topRight = f(a.topRight), a.bottomLeft = f(a.bottomLeft), a.bottomRight = f(a.bottomRight), { points: a, bbox: i };
+  getCornerPoints(t) {
+    const { canvas: e, contour: i = this.getLargestContourArea() } = t;
+    let r = { x0: 0, y0: 0, x1: e.width, y1: e.height };
+    if (!i)
+      return { points: { topLeft: { x: r.x0, y: r.y0 }, topRight: { x: r.x1, y: r.y0 }, bottomLeft: { x: r.x0, y: r.y1 }, bottomRight: { x: r.x1, y: r.y1 } }, bbox: r };
+    let o = l.minAreaRect(i), n = l.RotatedRect.points(o), s = { topLeft: { x: 0, y: 0 }, topRight: { x: 0, y: 0 }, bottomRight: { x: 0, y: 0 }, bottomLeft: { x: 0, y: 0 } }, h = n.map((w) => w.x + w.y), d = n.map((w) => w.y - w.x), c = h.indexOf(Math.min(...h)), g = d.indexOf(Math.min(...d)), u = h.indexOf(Math.max(...h)), f = d.indexOf(Math.max(...d));
+    if (!n[c] || !n[g] || !n[u] || !n[f])
+      return { points: { topLeft: { x: r.x0, y: r.y0 }, topRight: { x: r.x1, y: r.y0 }, bottomLeft: { x: r.x0, y: r.y1 }, bottomRight: { x: r.x1, y: r.y1 } }, bbox: r };
+    s.topLeft = { x: n[c].x, y: n[c].y }, s.topRight = { x: n[g].x, y: n[g].y }, s.bottomRight = { x: n[u].x, y: n[u].y }, s.bottomLeft = { x: n[f].x, y: n[f].y }, i.delete();
+    let p = (w) => (w.x = Math.max(0, Math.min(e.width, w.x)), w.y = Math.max(0, Math.min(e.height, w.y)), w);
+    return s.topLeft = p(s.topLeft), s.topRight = p(s.topRight), s.bottomLeft = p(s.bottomLeft), s.bottomRight = p(s.bottomRight), { points: s, bbox: r };
   }
-  getApproximateRectangleContour(e) {
-    const { threshold: t = 0.02, contour: r = this.getLargestContourArea() } = e ?? {};
-    if (!r) return;
-    let i = t * l.arcLength(r, !0), o = new l.Mat();
-    return l.approxPolyDP(r, o, i, !0), r.delete(), o;
+  getApproximateRectangleContour(t) {
+    const { threshold: e = 0.02, contour: i = this.getLargestContourArea() } = t ?? {};
+    if (!i) return;
+    let r = e * l.arcLength(i, !0), o = new l.Mat();
+    return l.approxPolyDP(i, o, r, !0), i.delete(), o;
   }
   destroy() {
     try {
@@ -326,99 +326,99 @@ class xe {
     }
   }
 }
-function be() {
+function bt() {
   return { mode: l.RETR_EXTERNAL, method: l.CHAIN_APPROX_SIMPLE };
 }
-class R {
-  constructor(e) {
+class I {
+  constructor(t) {
     m(this, "img");
     m(this, "width");
     m(this, "height");
-    if (e instanceof M) {
-      let r = e.getContext("2d").getImageData(0, 0, e.width, e.height);
-      this.img = l.matFromImageData(r), this.width = e.width, this.height = e.height;
-    } else if (e instanceof l.Mat)
-      this.img = e, this.width = e.cols, this.height = e.rows;
+    if (t instanceof M) {
+      let i = t.getContext("2d").getImageData(0, 0, t.width, t.height);
+      this.img = l.matFromImageData(i), this.width = t.width, this.height = t.height;
+    } else if (t instanceof l.Mat)
+      this.img = t, this.width = t.cols, this.height = t.rows;
     else
       throw new Error("Invalid source type. Must be either Canvas or cv.Mat.");
   }
-  static async prepareCanvas(e) {
-    if (e instanceof M) return e;
-    let t = await j(e), r = D(t.width, t.height);
-    return r.getContext("2d").drawImage(t, 0, 0), r;
+  static async prepareCanvas(t) {
+    if (t instanceof M) return t;
+    let e = await j(t), i = D(e.width, e.height);
+    return i.getContext("2d").drawImage(e, 0, 0), i;
   }
-  static async prepareBuffer(e) {
-    if (e instanceof ArrayBuffer) return e;
-    if (typeof e.toBuffer == "function") {
-      let o = e.toBuffer("image/png"), n = new ArrayBuffer(o.byteLength);
+  static async prepareBuffer(t) {
+    if (t instanceof ArrayBuffer) return t;
+    if (typeof t.toBuffer == "function") {
+      let o = t.toBuffer("image/png"), n = new ArrayBuffer(o.byteLength);
       return new Uint8Array(n).set(new Uint8Array(o)), n;
     }
-    if (typeof e.toDataURL == "function") {
-      let n = e.toDataURL("image/png").replace(/^data:image\/png;base64,/, ""), a = Buffer.from(n, "base64"), c = new ArrayBuffer(a.byteLength);
-      return new Uint8Array(c).set(new Uint8Array(a)), c;
+    if (typeof t.toDataURL == "function") {
+      let n = t.toDataURL("image/png").replace(/^data:image\/png;base64,/, ""), s = Buffer.from(n, "base64"), h = new ArrayBuffer(s.byteLength);
+      return new Uint8Array(h).set(new Uint8Array(s)), h;
     }
-    let r = e.getContext("2d").getImageData(0, 0, e.width, e.height), i = new ArrayBuffer(r.data.byteLength);
-    return new Uint8Array(i).set(new Uint8Array(r.data.buffer, r.data.byteOffset, r.data.byteLength)), i;
+    let i = t.getContext("2d").getImageData(0, 0, t.width, t.height), r = new ArrayBuffer(i.data.byteLength);
+    return new Uint8Array(r).set(new Uint8Array(i.data.buffer, i.data.byteOffset, i.data.byteLength)), r;
   }
   static async initRuntime() {
-    return new Promise((e) => {
-      l && l.Mat ? e() : l.onRuntimeInitialized = () => {
-        e();
+    return new Promise((t) => {
+      l && l.Mat ? t() : l.onRuntimeInitialized = () => {
+        t();
       };
     });
   }
-  execute(e, t) {
-    if (!x.hasOperation(e))
-      throw new Error(`Operation "${e}" not found`);
+  execute(t, e) {
+    if (!y.hasOperation(t))
+      throw new Error(`Operation "${t}" not found`);
     try {
-      let r = K(e, this.img, t);
-      this.img = r.img, this.width = r.width, this.height = r.height;
-    } catch (r) {
-      throw console.error(`Error executing operation "${e}":`, r), r;
+      let i = K(t, this.img, e);
+      this.img = i.img, this.width = i.width, this.height = i.height;
+    } catch (i) {
+      throw console.error(`Error executing operation "${t}":`, i), i;
     }
     return this;
   }
-  grayscale(e = {}) {
-    return this.execute("grayscale", e);
+  grayscale(t = {}) {
+    return this.execute("grayscale", t);
   }
-  invert(e = {}) {
-    return this.execute("invert", e);
+  invert(t = {}) {
+    return this.execute("invert", t);
   }
-  border(e = {}) {
-    return this.execute("border", e);
+  border(t = {}) {
+    return this.execute("border", t);
   }
-  blur(e = {}) {
-    return this.execute("blur", e);
+  blur(t = {}) {
+    return this.execute("blur", t);
   }
-  threshold(e = {}) {
-    return this.execute("threshold", e);
+  threshold(t = {}) {
+    return this.execute("threshold", t);
   }
-  adaptiveThreshold(e = {}) {
-    return this.execute("adaptiveThreshold", e);
+  adaptiveThreshold(t = {}) {
+    return this.execute("adaptiveThreshold", t);
   }
-  canny(e = {}) {
-    return this.execute("canny", e);
+  canny(t = {}) {
+    return this.execute("canny", t);
   }
-  morphologicalGradient(e = {}) {
-    return this.execute("morphologicalGradient", e);
+  morphologicalGradient(t = {}) {
+    return this.execute("morphologicalGradient", t);
   }
-  erode(e = {}) {
-    return this.execute("erode", e);
+  erode(t = {}) {
+    return this.execute("erode", t);
   }
-  dilate(e = {}) {
-    return this.execute("dilate", e);
+  dilate(t = {}) {
+    return this.execute("dilate", t);
   }
-  resize(e) {
-    return this.execute("resize", e);
+  resize(t) {
+    return this.execute("resize", t);
   }
-  warp(e) {
-    return this.execute("warp", e);
+  warp(t) {
+    return this.execute("warp", t);
   }
-  rotate(e) {
-    return this.execute("rotate", e);
+  rotate(t) {
+    return this.execute("rotate", t);
   }
-  convert(e) {
-    return this.execute("convert", e);
+  convert(t) {
+    return this.execute("convert", t);
   }
   destroy() {
     this.img.delete();
@@ -427,27 +427,27 @@ class R {
     return this.img;
   }
   toCanvas() {
-    let e = D(this.width, this.height), t = e.getContext("2d"), r = t.createImageData(this.width, this.height);
+    let t = D(this.width, this.height), e = t.getContext("2d"), i = e.createImageData(this.width, this.height);
     if (this.img.channels() === 1) {
-      let i = r.data, o = new Uint8Array(this.img.data);
+      let r = i.data, o = new Uint8Array(this.img.data);
       for (let n = 0; n < o.length; n++)
-        i[n * 4] = o[n], i[n * 4 + 1] = o[n], i[n * 4 + 2] = o[n], i[n * 4 + 3] = 255;
+        r[n * 4] = o[n], r[n * 4 + 1] = o[n], r[n * 4 + 2] = o[n], r[n * 4 + 3] = 255;
     } else
-      r.data.set(new Uint8ClampedArray(this.img.data));
-    return t.putImageData(r, 0, 0), e;
+      i.data.set(new Uint8ClampedArray(this.img.data));
+    return e.putImageData(i, 0, 0), t;
   }
 }
-let Ce = () => {
+let Ct = () => {
   if (typeof import.meta < "u" && import.meta.url) {
-    let s = import.meta.url;
-    return P.dirname(s);
+    let a = import.meta.url;
+    return P.dirname(a);
   }
   return "";
-}, N = Ce();
-const Re = P.join(N, "models", "en_PP-OCRv3_det_infer.onnx"), Te = P.join(N, "models", "en_PP-OCRv3_rec_infer.onnx"), Oe = P.join(N, "models", "en_dict.txt"), ve = {
-  detection: Re,
-  recognition: Te,
-  charactersDictionary: Oe
+}, N = Ct();
+const It = P.join(N, "models", "en_PP-OCRv3_det_infer.onnx"), Tt = P.join(N, "models", "en_PP-OCRv3_rec_infer.onnx"), Rt = P.join(N, "models", "en_dict.txt"), Ot = {
+  detection: It,
+  recognition: Tt,
+  charactersDictionary: Rt
 }, _ = {
   verbose: !1,
   debug: !1,
@@ -462,379 +462,410 @@ const Re = P.join(N, "models", "en_PP-OCRv3_det_infer.onnx"), Te = P.join(N, "mo
 }, F = {
   imageHeight: 48,
   charactersDictionary: []
-}, Ie = {
-  model: ve,
+}, vt = {
+  model: Ot,
   detection: U,
   recognition: F,
   debugging: _
-}, I = class I {
-  constructor(e, t = {}, r = {}) {
+}, v = class v {
+  constructor(t, e = {}, i = {}) {
     m(this, "options");
     m(this, "debugging");
     m(this, "session");
-    this.session = e, this.options = { ...U, ...t }, this.debugging = { ..._, ...r };
+    this.session = t, this.options = { ...U, ...e }, this.debugging = { ..._, ...i };
   }
-  log(e) {
-    this.debugging.verbose && console.log(`[DetectionService] ${e}`);
+  log(t) {
+    this.debugging.verbose && console.log(`[DetectionService] ${t}`);
   }
-  async run(e) {
+  async run(t) {
     this.log("Starting text detection process");
     try {
-      let t = await this.preprocessDetection(e), r = await this.runInference(t.tensor, t.width, t.height);
-      if (!r)
+      let e = await this.preprocessDetection(t), i = await this.runInference(e.tensor, e.width, e.height);
+      if (!i)
         return console.error("Text detection failed (output tensor is null)"), [];
-      let i = this.postprocessDetection(r, t);
-      return this.debugging.debug && (await this.debugDetectionCanvas(r, t.width, t.height), await this.debugDetectedBoxes(e, i)), this.log(`Detected ${i.length} text boxes in image`), i;
-    } catch (t) {
-      return console.error("Error during text detection:", t instanceof Error ? t.message : String(t)), [];
+      let r = this.postprocessDetection(i, e);
+      return this.debugging.debug && (await this.debugDetectionCanvas(i, e.width, e.height), await this.debugDetectedBoxes(t, r)), this.log(`Detected ${r.length} text boxes in image`), r;
+    } catch (e) {
+      return console.error("Error during text detection:", e instanceof Error ? e.message : String(e)), [];
     }
   }
-  async preprocessDetection(e) {
-    let t = e instanceof M ? e : await R.prepareCanvas(e);
-    const { width: r, height: i } = t, { width: o, height: n, ratio: a } = this.calculateResizeDimensions(r, i);
-    let c = new R(t), d = c.resize({ width: o, height: n }).toCanvas();
-    c.destroy();
-    let h = Math.ceil(o / 32) * 32, g = Math.ceil(n / 32) * 32, u = this.createPaddedCanvas(d, o, n, h, g), p = this.imageToTensor(u, h, g);
-    return this.log(`Detection preprocessed: original(${r}x${i}), model_input(${h}x${g}), resize_ratio: ${a.toFixed(4)}`), { tensor: p, width: h, height: g, resizeRatio: a, originalWidth: r, originalHeight: i };
+  async preprocessDetection(t) {
+    let e = t instanceof M ? t : await I.prepareCanvas(t);
+    const { width: i, height: r } = e, { width: o, height: n, ratio: s } = this.calculateResizeDimensions(i, r);
+    let h = new I(e), d = h.resize({ width: o, height: n }).toCanvas();
+    h.destroy();
+    let c = Math.ceil(o / 32) * 32, g = Math.ceil(n / 32) * 32, u = this.createPaddedCanvas(d, o, n, c, g), f = this.imageToTensor(u, c, g);
+    return this.log(`Detection preprocessed: original(${i}x${r}), model_input(${c}x${g}), resize_ratio: ${s.toFixed(4)}`), { tensor: f, width: c, height: g, resizeRatio: s, originalWidth: i, originalHeight: r };
   }
-  calculateResizeDimensions(e, t) {
-    let r = this.options.maxSideLength, i = e, o = t, n = 1;
-    return Math.max(o, i) > r && (n = r / (o > i ? o : i), i = Math.round(i * n), o = Math.round(o * n)), { width: i, height: o, ratio: n };
+  calculateResizeDimensions(t, e) {
+    let i = this.options.maxSideLength, r = t, o = e, n = 1;
+    return Math.max(o, r) > i && (n = i / (o > r ? o : r), r = Math.round(r * n), o = Math.round(o * n)), { width: r, height: o, ratio: n };
   }
-  createPaddedCanvas(e, t, r, i, o) {
-    let n = D(i, o);
-    return n.getContext("2d").drawImage(e, 0, 0, t, r), n;
+  createPaddedCanvas(t, e, i, r, o) {
+    let n = D(r, o);
+    return n.getContext("2d").drawImage(t, 0, 0, e, i), n;
   }
-  imageToTensor(e, t, r) {
-    let n = e.getContext("2d").getImageData(0, 0, t, r).data, a = new Float32Array(I.NUM_CHANNELS * r * t);
-    const { mean: c, stdDeviation: d } = this.options;
-    for (let h = 0; h < r; h++)
-      for (let g = 0; g < t; g++) {
-        let u = (h * t + g) * 4, p = h * t + g;
-        for (let f = 0; f < I.NUM_CHANNELS; f++) {
-          let v = (n[u + f] / 255 - c[f]) / d[f];
-          a[f * r * t + p] = v;
+  imageToTensor(t, e, i) {
+    let n = t.getContext("2d").getImageData(0, 0, e, i).data, s = new Float32Array(v.NUM_CHANNELS * i * e);
+    const { mean: h, stdDeviation: d } = this.options;
+    for (let c = 0; c < i; c++)
+      for (let g = 0; g < e; g++) {
+        let u = (c * e + g) * 4, f = c * e + g;
+        for (let p = 0; p < v.NUM_CHANNELS; p++) {
+          let O = (n[u + p] / 255 - h[p]) / d[p];
+          s[p * i * e + f] = O;
         }
       }
-    return a;
+    return s;
   }
-  async runInference(e, t, r) {
+  async runInference(t, e, i) {
     try {
       this.log("Running detection inference...");
-      let o = { x: new T.Tensor("float32", e, [1, 3, r, t]) }, a = (await this.session.run(o))[this.session.outputNames[0] || "sigmoid_0.tmp_0"];
-      return this.log("Detection inference complete!"), a ? a.data : (console.error(`Output tensor ${this.session.outputNames[0]} not found in detection results`), null);
-    } catch (i) {
-      throw console.error("Error during model inference:", i instanceof Error ? i.message : String(i)), i;
+      let o = { x: new T.Tensor("float32", t, [1, 3, i, e]) }, s = (await this.session.run(o))[this.session.outputNames[0] || "sigmoid_0.tmp_0"];
+      return this.log("Detection inference complete!"), s ? s.data : (console.error(`Output tensor ${this.session.outputNames[0]} not found in detection results`), null);
+    } catch (r) {
+      throw console.error("Error during model inference:", r instanceof Error ? r.message : String(r)), r;
     }
   }
-  tensorToCanvas(e, t, r) {
-    let i = D(t, r), o = i.getContext("2d"), n = o.createImageData(t, r), a = n.data;
-    for (let c = 0; c < r; c++)
-      for (let d = 0; d < t; d++) {
-        let h = c * t + d, g = e[h] || 0, u = Math.round(g * 255), p = (c * t + d) * 4;
-        a[p] = u, a[p + 1] = u, a[p + 2] = u, a[p + 3] = 255;
+  tensorToCanvas(t, e, i) {
+    let r = D(e, i), o = r.getContext("2d"), n = o.createImageData(e, i), s = n.data;
+    for (let h = 0; h < i; h++)
+      for (let d = 0; d < e; d++) {
+        let c = h * e + d, g = t[c] || 0, u = Math.round(g * 255), f = (h * e + d) * 4;
+        s[f] = u, s[f + 1] = u, s[f + 2] = u, s[f + 3] = 255;
       }
-    return o.putImageData(n, 0, 0), i;
+    return o.putImageData(n, 0, 0), r;
   }
-  postprocessDetection(e, t, r = this.options.minimumAreaThreshold || 20, i = this.options.paddingVertical || 0.4, o = this.options.paddingHorizontal || 0.6) {
+  postprocessDetection(t, e, i = this.options.minimumAreaThreshold || 20, r = this.options.paddingVertical || 0.4, o = this.options.paddingHorizontal || 0.6) {
     this.log("Post-processing detection results...");
-    const { width: n, height: a, resizeRatio: c, originalWidth: d, originalHeight: h } = t;
-    let g = this.tensorToCanvas(e, n, a), u = new R(g);
+    const { width: n, height: s, resizeRatio: h, originalWidth: d, originalHeight: c } = e;
+    let g = this.tensorToCanvas(t, n, s), u = new I(g);
     u.grayscale().convert({ rtype: l.CV_8UC1 });
-    let p = new xe(u.toMat(), { mode: l.RETR_LIST, method: l.CHAIN_APPROX_SIMPLE }), f = this.extractBoxesFromContours(p, n, a, c, d, h, r, i, o);
-    return u.destroy(), p.destroy(), this.log(`Found ${f.length} potential text boxes`), f;
+    let f = new yt(u.toMat(), { mode: l.RETR_LIST, method: l.CHAIN_APPROX_SIMPLE }), p = this.extractBoxesFromContours(f, n, s, h, d, c, i, r, o);
+    return u.destroy(), f.destroy(), this.log(`Found ${p.length} potential text boxes`), p;
   }
-  extractBoxesFromContours(e, t, r, i, o, n, a, c, d) {
-    let h = [];
-    return e.iterate((g) => {
-      let u = e.getRect(g);
-      if (u.width * u.height <= a)
+  extractBoxesFromContours(t, e, i, r, o, n, s, h, d) {
+    let c = [];
+    return t.iterate((g) => {
+      let u = t.getRect(g);
+      if (u.width * u.height <= s)
         return;
-      let p = this.applyPaddingToRect(u, t, r, c, d), f = this.convertToOriginalCoordinates(p, i, o, n);
-      f.width > 5 && f.height > 5 && h.push(f);
-    }), h;
+      let f = this.applyPaddingToRect(u, e, i, h, d), p = this.convertToOriginalCoordinates(f, r, o, n);
+      p.width > 5 && p.height > 5 && c.push(p);
+    }), c;
   }
-  applyPaddingToRect(e, t, r, i, o) {
-    let n = Math.round(e.height * i), a = Math.round(e.height * o), c = e.x - a, d = e.y - n, h = e.width + 2 * a, g = e.height + 2 * n;
-    c = Math.max(0, c), d = Math.max(0, d);
-    let u = Math.min(t, e.x + e.width + a), p = Math.min(r, e.y + e.height + n);
-    return h = u - c, g = p - d, { x: c, y: d, width: h, height: g };
+  applyPaddingToRect(t, e, i, r, o) {
+    let n = Math.round(t.height * r), s = Math.round(t.height * o), h = t.x - s, d = t.y - n, c = t.width + 2 * s, g = t.height + 2 * n;
+    h = Math.max(0, h), d = Math.max(0, d);
+    let u = Math.min(e, t.x + t.width + s), f = Math.min(i, t.y + t.height + n);
+    return c = u - h, g = f - d, { x: h, y: d, width: c, height: g };
   }
-  convertToOriginalCoordinates(e, t, r, i) {
-    let o = e.x / t, n = e.y / t, a = e.width / t, c = e.height / t, d = Math.max(0, Math.round(o)), h = Math.max(0, Math.round(n)), g = Math.min(r - d, Math.round(a)), u = Math.min(i - h, Math.round(c));
-    return { x: d, y: h, width: g, height: u };
+  convertToOriginalCoordinates(t, e, i, r) {
+    let o = t.x / e, n = t.y / e, s = t.width / e, h = t.height / e, d = Math.max(0, Math.round(o)), c = Math.max(0, Math.round(n)), g = Math.min(i - d, Math.round(s)), u = Math.min(r - c, Math.round(h));
+    return { x: d, y: c, width: g, height: u };
   }
-  async debugDetectionCanvas(e, t, r) {
-    let i = this.tensorToCanvas(e, t, r), o = this.debugging.debugFolder;
-    await O.getInstance().saveImage({ canvas: i, filename: "detection-debug", path: o }), this.log(`Probability map visualized and saved to: ${o}`);
+  async debugDetectionCanvas(t, e, i) {
+    let r = this.tensorToCanvas(t, e, i), o = this.debugging.debugFolder;
+    await R.getInstance().saveImage({ canvas: r, filename: "detection-debug", path: o }), this.log(`Probability map visualized and saved to: ${o}`);
   }
-  async debugDetectedBoxes(e, t) {
-    let r = e instanceof M ? e : await R.prepareCanvas(e), i = r.getContext("2d"), o = O.getInstance();
-    for (let a of t) {
-      const { x: c, y: d, width: h, height: g } = a;
-      o.drawLine({ ctx: i, x: c, y: d, width: h, height: g });
+  async debugDetectedBoxes(t, e) {
+    let i = t instanceof M ? t : await I.prepareCanvas(t), r = i.getContext("2d"), o = R.getInstance();
+    for (let s of e) {
+      const { x: h, y: d, width: c, height: g } = s;
+      o.drawLine({ ctx: r, x: h, y: d, width: c, height: g });
     }
     let n = this.debugging.debugFolder;
-    await O.getInstance().saveImage({ canvas: r, filename: "boxes-debug", path: n }), this.log(`Boxes visualized and saved to: ${n}`);
+    await R.getInstance().saveImage({ canvas: i, filename: "boxes-debug", path: n }), this.log(`Boxes visualized and saved to: ${n}`);
   }
 };
-m(I, "NUM_CHANNELS", 3);
-let S = I;
+m(v, "NUM_CHANNELS", 3);
+let S = v;
 const b = class b {
-  constructor(e, t = {}, r = {}) {
+  constructor(t, e = {}, i = {}) {
     m(this, "options");
     m(this, "debugging");
     m(this, "session");
     m(this, "toolkit");
-    this.session = e, this.toolkit = O.getInstance(), this.options = { ...F, ...t }, this.debugging = { ..._, ...r };
+    this.session = t, this.toolkit = R.getInstance(), this.options = { ...F, ...e }, this.debugging = { ..._, ...i };
   }
-  log(e) {
-    this.debugging.verbose && console.log(`[RecognitionService] ${e}`);
+  log(t) {
+    this.debugging.verbose && console.log(`[RecognitionService] ${t}`);
   }
-  async run(e, t) {
+  async run(t, e) {
     this.log("Starting text recognition process");
     try {
-      let r = e instanceof M ? e : await R.prepareCanvas(e), i = this.filterValidBoxes(t), o = await this.processBoxesInParallel(r, i);
+      let i = t instanceof M ? t : await I.prepareCanvas(t), r = this.filterValidBoxes(e), o = await this.processBoxesInParallel(i, r);
       return this.sortResultsByReadingOrder(o);
-    } catch (r) {
-      return console.error("Error during text recognition:", r instanceof Error ? r.message : String(r)), [];
+    } catch (i) {
+      return console.error("Error during text recognition:", i instanceof Error ? i.message : String(i)), [];
     }
   }
-  filterValidBoxes(e) {
-    return e.map((t, r) => ({ box: t, index: r })).filter(({ box: t, index: r }) => this.isValidBox(t, r));
+  filterValidBoxes(t) {
+    return t.map((e, i) => ({ box: e, index: i })).filter(({ box: e, index: i }) => this.isValidBox(e, i));
   }
-  async processBoxesInParallel(e, t) {
-    let r = this.debugging.debugFolder + "/crops";
-    if (this.debugging.debug && this.toolkit.clearOutput(r), typeof window < "u") {
-      const i = [];
-      for (let o = 0; o < t.length; o++) {
-        const { box: n, index: a } = t[o];
-        await new Promise((c) => setTimeout(c, 10));
+  async processBoxesInParallel(t, e) {
+    let i = this.debugging.debugFolder + "/crops";
+    if (this.debugging.debug && this.toolkit.clearOutput(i), typeof window < "u") {
+      const r = [];
+      for (let o = 0; o < e.length; o++) {
+        const { box: n, index: s } = e[o];
+        await new Promise((h) => setTimeout(h, 10));
         try {
-          const c = await this.processBox(e, n, a, t.length, r);
-          c !== null && i.push(c);
-        } catch (c) {
-          console.error(`Error in sequential processBox ${a}:`, c);
+          const h = await this.processBox(t, n, s, e.length, i);
+          h !== null && r.push(h);
+        } catch (h) {
+          console.error(`Error in sequential processBox ${s}:`, h);
         }
       }
-      return i;
+      return r;
     } else {
-      let i = t.map(({ box: n, index: a }) => this.processBox(e, n, a, t.length, r));
-      return (await Promise.all(i)).filter((n) => n !== null);
+      let r = e.map(({ box: n, index: s }) => this.processBox(t, n, s, e.length, i));
+      return (await Promise.all(r)).filter((n) => n !== null);
     }
   }
-  async processBox(e, t, r, i, o) {
+  async processBox(t, e, i, r, o) {
     let n = Date.now();
     try {
-      let a = this.cropRegion(e, t), c = await this.recognizeText(a);
-      return this.debugging.debug && (await this.saveDebugCrop(a, r, o), this.logProcessingDetails(t, r, i, c, n)), { text: c, box: t };
-    } catch (a) {
-      return console.error(`Error processing box ${r + 1}: ${a.message}`, a.stack), null;
+      let s = this.cropRegion(t, e), h = await this.recognizeText(s);
+      return this.debugging.debug && (await this.saveDebugCrop(s, i, o), this.logProcessingDetails(e, i, r, h, n)), { text: h, box: e };
+    } catch (s) {
+      return console.error(`Error processing box ${i + 1}: ${s.message}`, s.stack), null;
     }
   }
-  sortResultsByReadingOrder(e) {
-    return [...e].sort((t, r) => {
-      let i = t.box, o = r.box;
-      return Math.abs(i.y - o.y) < (i.height + o.height) / 4 ? i.x - o.x : i.y - o.y;
+  sortResultsByReadingOrder(t) {
+    return [...t].sort((e, i) => {
+      let r = e.box, o = i.box;
+      return Math.abs(r.y - o.y) < (r.height + o.height) / 4 ? r.x - o.x : r.y - o.y;
     });
   }
-  isValidBox(e, t) {
-    return e.width <= 0 || e.height <= 0 ? (console.warn(`Skipping invalid box ${t + 1}: w=${e.width}, h=${e.height}`), !1) : !0;
+  isValidBox(t, e) {
+    return t.width <= 0 || t.height <= 0 ? (console.warn(`Skipping invalid box ${e + 1}: w=${t.width}, h=${t.height}`), !1) : !0;
   }
-  cropRegion(e, t) {
+  cropRegion(t, e) {
     return this.toolkit.crop({
-      bbox: { x0: t.x, y0: t.y, x1: t.x + t.width, y1: t.y + t.height },
-      canvas: e
+      bbox: { x0: e.x, y0: e.y, x1: e.x + e.width, y1: e.y + e.height },
+      canvas: t
     });
   }
-  async saveDebugCrop(e, t, r) {
-    await this.toolkit.saveImage({ canvas: e, filename: `crop_${String(t).padStart(3, "0")}.png`, path: r });
+  async saveDebugCrop(t, e, i) {
+    await this.toolkit.saveImage({ canvas: t, filename: `crop_${String(e).padStart(3, "0")}.png`, path: i });
   }
-  logProcessingDetails(e, t, r, i, o) {
+  logProcessingDetails(t, e, i, r, o) {
     let n = Date.now() - o;
-    this.log(`Box ${t + 1}/${r}: [x:${e.x}, y:${e.y}, w:${e.width}, h:${e.height}] → "${i}" (processed in ${n}ms)`);
+    this.log(`Box ${e + 1}/${i}: [x:${t.x}, y:${t.y}, w:${t.width}, h:${t.height}] → "${r}" (processed in ${n}ms)`);
   }
-  async recognizeText(e) {
-    const { imageTensor: t, tensorWidth: r, tensorHeight: i } = await this.preprocessImage(e);
-    let o = new T.Tensor("float32", t, [1, 3, i, r]), n = await this.runInference(o);
+  async recognizeText(t) {
+    const { imageTensor: e, tensorWidth: i, tensorHeight: r } = await this.preprocessImage(t);
+    let o = new T.Tensor("float32", e, [1, 3, r, i]), n = await this.runInference(o);
     return this.decodeResults(n);
   }
-  async preprocessImage(e) {
-    let t = new R(e), r = this.options.imageHeight, i = t.width, o = t.height;
-    if (o === 0 || i === 0)
-      throw new Error(`Crop dimensions are zero: ${i}x${o}`);
-    let n = i / o, a = Math.max(b.MIN_CROP_WIDTH, Math.round(r * n));
-    t.resize({ width: a, height: r });
-    let c = this.createImageTensor(t, a, r);
-    return t.destroy(), { imageTensor: c, tensorWidth: a, tensorHeight: r };
+  async preprocessImage(t) {
+    let e = new I(t), i = this.options.imageHeight, r = e.width, o = e.height;
+    if (o === 0 || r === 0)
+      throw new Error(`Crop dimensions are zero: ${r}x${o}`);
+    let n = r / o, s = Math.max(b.MIN_CROP_WIDTH, Math.round(i * n));
+    e.resize({ width: s, height: i });
+    let h = this.createImageTensor(e, s, i);
+    return e.destroy(), { imageTensor: h, tensorWidth: s, tensorHeight: i };
   }
-  createImageTensor(e, t, r) {
-    let a = e.toCanvas().getContext("2d").getImageData(0, 0, t, r).data, c = 3, d = new Float32Array(c * r * t);
-    for (let h = 0; h < r; h++)
-      for (let g = 0; g < t; g++) {
-        let u = (h * t + g) * 4, f = (a[u] / 255 - 0.5) / 0.5;
-        for (let w = 0; w < c; w++) {
-          let v = w * r * t + h * t + g;
-          d[v] = f;
+  createImageTensor(t, e, i) {
+    let s = t.toCanvas().getContext("2d").getImageData(0, 0, e, i).data, h = 3, d = new Float32Array(h * i * e);
+    for (let c = 0; c < i; c++)
+      for (let g = 0; g < e; g++) {
+        let u = (c * e + g) * 4, p = (s[u] / 255 - 0.5) / 0.5;
+        for (let w = 0; w < h; w++) {
+          let O = w * i * e + c * e + g;
+          d[O] = p;
         }
       }
     return d;
   }
-  async runInference(e) {
-    let t = { x: e }, r = await this.session.run(t), i = Object.keys(r)[0], o = r[i];
+  async runInference(t) {
+    let e = { x: t }, i = await this.session.run(e), r = Object.keys(i)[0], o = i[r];
     if (!o)
-      throw new Error(`Recognition output tensor '${i}' not found. Available keys: ${Object.keys(r)}`);
+      throw new Error(`Recognition output tensor '${r}' not found. Available keys: ${Object.keys(i)}`);
     return o;
   }
-  decodeResults(e) {
-    let t = e.data, r = e.dims, i = r[1], o = r[2];
-    return o !== this.options.charactersDictionary.length && console.warn(`Warning: Model output classes (${o}) does not match dictionary length (${this.options.charactersDictionary.length})`), this.ctcGreedyDecode(t, i, o, this.options.charactersDictionary);
+  decodeResults(t) {
+    let e = t.data, i = t.dims, r = i[1], o = i[2];
+    return o !== this.options.charactersDictionary.length && console.warn(`Warning: Model output classes (${o}) does not match dictionary length (${this.options.charactersDictionary.length})`), this.ctcGreedyDecode(e, r, o, this.options.charactersDictionary);
   }
-  ctcGreedyDecode(e, t, r, i) {
+  ctcGreedyDecode(t, e, i, r) {
     let o = "", n = -1;
-    for (let a = 0; a < t; a++) {
-      const { index: c } = this.findMaxProbabilityClass(e, a, r);
-      if (c === b.BLANK_INDEX || c === n) {
-        n = c;
+    for (let s = 0; s < e; s++) {
+      const { index: h } = this.findMaxProbabilityClass(t, s, i);
+      if (h === b.BLANK_INDEX || h === n) {
+        n = h;
         continue;
       }
-      this.isValidDictionaryIndex(c, i) ? this.appendCharacterToText(c, i, (d) => {
+      this.isValidDictionaryIndex(h, r) ? this.appendCharacterToText(h, r, (d) => {
         o += d;
-      }) : console.warn(`Decoded index ${c} out of bounds for charDict (length ${i.length}) at t=${a}`), n = c;
+      }) : console.warn(`Decoded index ${h} out of bounds for charDict (length ${r.length}) at t=${s}`), n = h;
     }
     return o;
   }
-  appendCharacterToText(e, t, r) {
-    let i = t[e];
-    if (e === t.length - 1) {
-      if (i === b.UNK_TOKEN)
+  appendCharacterToText(t, e, i) {
+    let r = e[t];
+    if (t === e.length - 1) {
+      if (r === b.UNK_TOKEN)
         return;
-      r(" ");
+      i(" ");
       return;
     }
-    r(i);
+    i(r);
   }
-  findMaxProbabilityClass(e, t, r) {
-    let i = -1 / 0, o = 0;
-    for (let n = 0; n < r; n++) {
-      let a = e[t * r + n];
-      a > i && (i = a, o = n);
+  findMaxProbabilityClass(t, e, i) {
+    let r = -1 / 0, o = 0;
+    for (let n = 0; n < i; n++) {
+      let s = t[e * i + n];
+      s > r && (r = s, o = n);
     }
-    return { value: i, index: o };
+    return { value: r, index: o };
   }
-  isValidDictionaryIndex(e, t) {
-    return e >= 0 && e < t.length;
+  isValidDictionaryIndex(t, e) {
+    return t >= 0 && t < e.length;
   }
 };
 m(b, "BLANK_INDEX", 0), m(b, "UNK_TOKEN", "<unk>"), m(b, "MIN_CROP_WIDTH", 8);
 let $ = b;
-const y = class y {
-  constructor(e) {
+const x = class x {
+  constructor(t) {
     m(this, "options");
     m(this, "detectionSession", null);
     m(this, "recognitionSession", null);
-    this.options = { ...Ie, ...e };
+    this.options = { ...vt, ...t };
   }
-  log(e) {
-    var t;
-    (t = this.options.debugging) != null && t.verbose && console.log(`[PaddleOcrService] ${e}`);
+  log(t) {
+    var e;
+    (e = this.options.debugging) != null && e.verbose && console.log(`[PaddleOcrService] ${t}`);
   }
-  async initialize(e) {
-    var t, r;
+  async initialize(t) {
+    var e, i;
     try {
-      let i = { ...this.options, ...e }, o = i.model.detection, n = i.model.recognition, a = i.model.charactersDictionary;
+      let r = { ...this.options, ...t }, o = r.model.detection, n = r.model.recognition, s = r.model.charactersDictionary;
       if (typeof window < "u") {
-        this.log(`Browser: Fetching dictionary from: ${a}`);
-        const c = await fetch(a);
-        if (!c.ok)
-          throw new Error(`Failed to fetch characters dictionary: ${c.status} ${c.statusText}`);
-        const h = (await c.text()).split(`
+        this.log(`Browser: Fetching dictionary from: ${s}`);
+        const h = await fetch(s);
+        if (!h.ok)
+          throw new Error(`Failed to fetch characters dictionary: ${h.status} ${h.statusText}`);
+        const c = (await h.text()).split(`
 `);
-        this.options.recognition.charactersDictionary = h, this.log(`Character dictionary loaded with ${h.length} entries.`), this.log(`Browser: Loading Detection model from: ${o}`);
+        this.options.recognition.charactersDictionary = c, this.log(`Character dictionary loaded with ${c.length} entries.`), this.log(`Browser: Loading Detection model from: ${o}`);
         const u = o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
         this.detectionSession = await T.InferenceSession.create(o, u), this.log(`Browser: Loading Recognition model from: ${n}`);
-        const f = n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.recognitionSession = await T.InferenceSession.create(n, f);
+        const p = n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
+        this.recognitionSession = await T.InferenceSession.create(n, p);
       } else {
-        let c = L(process.cwd(), o), d = L(process.cwd(), n), h = L(process.cwd(), a);
-        this.log(`Node: Loading Detection ONNX model from: ${c}`);
-        let g = A(c).buffer;
-        const p = o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.detectionSession = await T.InferenceSession.create(g, p), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading Recognition ONNX model from: ${d}`);
-        let f = A(d).buffer;
-        const v = n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.recognitionSession = await T.InferenceSession.create(f, v), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading character dictionary from: ${h}`);
-        let H = A(h, "utf-8").split(`
+        let h = L(process.cwd(), o), d = L(process.cwd(), n), c = L(process.cwd(), s);
+        this.log(`Node: Loading Detection ONNX model from: ${h}`);
+        let g = A(h).buffer;
+        const f = o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
+        this.detectionSession = await T.InferenceSession.create(g, f), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading Recognition ONNX model from: ${d}`);
+        let p = A(d).buffer;
+        const O = n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
+        this.recognitionSession = await T.InferenceSession.create(p, O), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading character dictionary from: ${c}`);
+        let H = A(c, "utf-8").split(`
 `);
         if (!H.length)
-          throw new Error(`Character dictionary at ${h} is empty or not found.`);
+          throw new Error(`Character dictionary at ${c} is empty or not found.`);
         this.options.recognition.charactersDictionary = H;
       }
-      this.log(`Initialization complete. Character dictionary has ${((r = (t = this.options.recognition) == null ? void 0 : t.charactersDictionary) == null ? void 0 : r.length) || 0} entries.`);
-    } catch (i) {
-      throw console.error("Failed to initialize PaddleOcrService:", i), i;
+      this.log(`Initialization complete. Character dictionary has ${((i = (e = this.options.recognition) == null ? void 0 : e.charactersDictionary) == null ? void 0 : i.length) || 0} entries.`);
+    } catch (r) {
+      throw console.error("Failed to initialize PaddleOcrService:", r), r;
     }
   }
-  static async getInstance(e) {
-    return y.instance ? e && await y.instance.initialize(e) : (y.instance = new y(e), await y.instance.initialize()), y.instance;
+  static async getInstance(t) {
+    return x.instance ? t && await x.instance.initialize(t) : (x.instance = new x(t), await x.instance.initialize()), x.instance;
   }
   isInitialized() {
     return this.detectionSession !== null && this.recognitionSession !== null;
   }
-  static async changeModel(e) {
-    return y.instance ? (await y.instance.destroy(), await y.instance.initialize(e)) : (y.instance = new y(e), await y.instance.initialize()), y.instance;
+  static async changeModel(t) {
+    return x.instance ? (await x.instance.destroy(), await x.instance.initialize(t)) : (x.instance = new x(t), await x.instance.initialize()), x.instance;
   }
-  static async createInstance(e) {
-    let t = new y(e);
-    return await t.initialize(), t;
+  static async createInstance(t) {
+    let e = new x(t);
+    return await e.initialize(), e;
   }
-  async recognize(e) {
-    await R.initRuntime();
-    let t = new S(this.detectionSession, this.options.detection, this.options.debugging), r = new $(this.recognitionSession, this.options.recognition, this.options.debugging), i = await t.run(e), o = await r.run(e, i);
+  async recognize(t) {
+    await I.initRuntime();
+    let e = new S(this.detectionSession, this.options.detection, this.options.debugging), i = new $(this.recognitionSession, this.options.recognition, this.options.debugging), r = await e.run(t), o = await i.run(t, r);
     return this.groupResult(o);
   }
-  groupResult(e) {
-    let t = { text: "", lines: [] };
-    if (!e.length)
-      return t;
-    let r = [e[0]], i = e[0].text, o = e[0].box.height;
-    for (let n = 1; n < e.length; n++) {
-      let a = e[n], c = e[n - 1], d = Math.abs(a.box.y - c.box.y), h = o * 0.5;
-      d <= h ? (r.push(a), i += ` ${a.text}`, o = r.reduce((g, u) => g + u.box.height, 0) / r.length) : (t.lines.push([...r]), i += `
-${a.text}`, r = [a], o = a.box.height);
+  getEncompassingBox(t) {
+    if (!t || t.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
+    let e = 1 / 0, i = 1 / 0, r = -1 / 0, o = -1 / 0;
+    for (const n of t) {
+      const s = n.box;
+      s && (e = Math.min(e, s.x), i = Math.min(i, s.y), r = Math.max(r, s.x + s.width), o = Math.max(o, s.y + s.height));
     }
-    return r.length > 0 && t.lines.push([...r]), t.text = i, t;
+    return {
+      x: e === 1 / 0 ? 0 : e,
+      y: i === 1 / 0 ? 0 : i,
+      width: r === -1 / 0 ? 0 : r - e,
+      height: o === -1 / 0 ? 0 : o - i
+    };
+  }
+  groupResult(t) {
+    let e = { text: "", lines: [] };
+    if (!t.length)
+      return e;
+    let i = [t[0]], r = t[0].text, o = t[0].box.height;
+    for (let n = 1; n < t.length; n++) {
+      let s = t[n], h = t[n - 1], d = Math.abs(s.box.y - h.box.y), c = o * 0.5;
+      if (d <= c)
+        i.push(s), r += ` ${s.text}`, o = i.reduce((g, u) => g + u.box.height, 0) / i.length;
+      else {
+        const g = i.map((f) => f.text).join(" "), u = this.getEncompassingBox(i);
+        e.lines.push({
+          text: g,
+          box: u,
+          words: [...i]
+        }), r += `
+${s.text}`, i = [s], o = s.box.height;
+      }
+    }
+    if (i.length > 0) {
+      const n = i.map((h) => h.text).join(" "), s = this.getEncompassingBox(i);
+      e.lines.push({
+        text: n,
+        box: s,
+        words: [...i]
+      });
+    }
+    return e.text = r, e;
   }
   async destroy() {
-    var e, t;
-    await ((e = this.detectionSession) == null ? void 0 : e.release()), await ((t = this.recognitionSession) == null ? void 0 : t.release());
+    var t, e;
+    await ((t = this.detectionSession) == null ? void 0 : t.release()), await ((e = this.recognitionSession) == null ? void 0 : e.release());
   }
 };
-m(y, "instance", null);
-let B = y;
-class Me {
+m(x, "instance", null);
+let B = x;
+class Mt {
   /**
    * Instantiate PaddleOCRClient
    * @param {object} options Configurations (e.g. { verbose: true, detection: { maxSideLength: 2000 } })
    */
-  constructor(e = {}) {
-    this.options = e, this.service = null;
+  constructor(t = {}) {
+    this.options = t, this.service = null;
   }
   /**
    * Initialize and load model assets via HTTP GET requests
    * @param {object} modelConfig Custom model paths, defaults to '/models/en_PP-OCRv3_det_infer.onnx', etc.
    */
-  async init(e = {}) {
-    const r = {
+  async init(t = {}) {
+    const i = {
       ...{
         detection: "/models/en_PP-OCRv3_det_infer.onnx",
         recognition: "/models/en_PP-OCRv3_rec_infer.onnx",
         charactersDictionary: "/models/en_dict.txt"
       },
-      ...e
+      ...t
     };
     this.service = new B({
-      model: r,
+      model: i,
       detection: {
         maxSideLength: this.options.maxSideLength || 2e3,
         ...this.options.detection
@@ -849,14 +880,14 @@ class Me {
    * Runs OCR text and layout extraction on an image canvas, URL, base64, Blob or File.
    * @param {string|HTMLCanvasElement|Blob|File|ArrayBuffer} imageInput
    */
-  async recognize(e) {
+  async recognize(t) {
     if (!this.service)
       throw new Error("PaddleOCRClient is not initialized. Please call init() first.");
-    return this.service.recognize(e);
+    return this.service.recognize(t);
   }
 }
-typeof window < "u" && (window.PaddleOCRClient = Me);
+typeof window < "u" && (window.PaddleOCRClient = Mt);
 export {
-  Me as PaddleOCRClient,
-  Me as default
+  Mt as PaddleOCRClient,
+  Mt as default
 };
