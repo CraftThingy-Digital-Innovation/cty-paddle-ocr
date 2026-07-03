@@ -1,5 +1,33 @@
 import { PaddleOcrService } from 'ppu-paddle-ocr';
+import { RecognitionService } from 'ppu-paddle-ocr/processor/recognition.service.js';
 import * as ort from 'onnxruntime-web';
+
+// Patch RecognitionService to run sequentially in browser environments
+// This prevents concurrent WebAssembly inferences from locking up the browser main thread.
+if (typeof window !== 'undefined') {
+  RecognitionService.prototype.processBoxesInParallel = async function(sourceCanvas, boxData) {
+    const cropsDebugPath = this.debugging.debugFolder + "/crops";
+    const results = [];
+    
+    for (let i = 0; i < boxData.length; i++) {
+      const { box, index } = boxData[i];
+      
+      // Yield to the browser main thread to keep UI responsive
+      await new Promise(resolve => setTimeout(resolve, 10));
+      
+      try {
+        const result = await this.processBox(sourceCanvas, box, index, boxData.length, cropsDebugPath);
+        if (result !== null) {
+          results.push(result);
+        }
+      } catch (err) {
+        console.error(`Error in sequential processBox ${index}:`, err);
+      }
+    }
+    
+    return results;
+  };
+}
 
 class PaddleOCRClient {
   /**

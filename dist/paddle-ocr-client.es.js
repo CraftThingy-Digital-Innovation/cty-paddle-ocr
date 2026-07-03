@@ -4,7 +4,7 @@ var f = (a, t, e) => W(a, typeof t != "symbol" ? t + "" : t, e);
 import * as E from "onnxruntime-node";
 import l from "@techstark/opencv-js";
 import * as _ from "onnxruntime-web";
-function P(a, t) {
+function A(a, t) {
   const e = typeof t == "string" && t.toLowerCase().includes("utf-8") || typeof t == "object" && t.encoding && t.encoding.toLowerCase().includes("utf-8"), i = new XMLHttpRequest();
   if (i.open("GET", a, !1), e) {
     if (i.send(), i.status !== 200 && i.status !== 0)
@@ -50,7 +50,7 @@ function k(a) {
     }
   return a.substring(0, a.lastIndexOf("/")) || ".";
 }
-const L = { resolve: O, join: D, dirname: k }, R = typeof HTMLCanvasElement < "u" ? HTMLCanvasElement : class {
+const P = { resolve: O, join: D, dirname: k }, R = typeof HTMLCanvasElement < "u" ? HTMLCanvasElement : class {
 };
 function M(a, t) {
   const e = document.createElement("canvas");
@@ -93,12 +93,12 @@ class j {
     return Array.from(this.operations.keys());
   }
 }
-let y = new j();
+let x = new j();
 function X(a, t, e) {
-  let i = y.getOperation(a);
+  let i = x.getOperation(a);
   if (!i)
     throw new Error(`Operation "${a}" not found in registry`);
-  let n = y.getDefaultOptionsGenerator(a), r = { ...(typeof n == "function" ? n : () => ({}))(), ...e };
+  let n = x.getDefaultOptionsGenerator(a), r = { ...(typeof n == "function" ? n : () => ({}))(), ...e };
   return i(t, r);
 }
 function K() {
@@ -108,7 +108,7 @@ function Y(a, t) {
   let e = new l.Mat();
   return l.adaptiveThreshold(a, e, t.upper, t.method, t.type, t.size, t.constant), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("adaptiveThreshold", Y, K);
+x.register("adaptiveThreshold", Y, K);
 function q() {
   return { size: [5, 5], sigma: 0 };
 }
@@ -116,7 +116,7 @@ function J(a, t) {
   let e = new l.Mat();
   return l.GaussianBlur(a, e, new l.Size(t.size[0], t.size[1]), t.sigma), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("blur", J, q);
+x.register("blur", J, q);
 function Q() {
   return { size: 10, borderType: l.BORDER_CONSTANT, borderColor: [255, 255, 255, 255] };
 }
@@ -124,7 +124,7 @@ function Z(a, t) {
   let e = new l.Mat();
   return l.copyMakeBorder(a, e, t.size, t.size, t.size, t.size, t.borderType, t.borderColor), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("border", Z, Q);
+x.register("border", Z, Q);
 function tt() {
   return { lower: 50, upper: 150 };
 }
@@ -132,14 +132,14 @@ function et(a, t) {
   let e = new l.Mat();
   return l.Canny(a, e, t.lower, t.upper), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("canny", et, tt);
+x.register("canny", et, tt);
 function it(a, t) {
   if (t.rtype === void 0)
     throw new Error("Invalid options: rtype is required");
   let e = new l.Mat();
   return a.convertTo(e, t.rtype), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("convert", it);
+x.register("convert", it);
 function nt() {
   return { size: [5, 5], iter: 1 };
 }
@@ -147,7 +147,7 @@ function rt(a, t) {
   let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
   return l.dilate(a, e, i, new l.Point(-1, -1), t.iter), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("dilate", rt, nt);
+x.register("dilate", rt, nt);
 function ot() {
   return { size: [5, 5], iter: 1 };
 }
@@ -155,7 +155,7 @@ function st(a, t) {
   let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
   return l.erode(a, e, i, new l.Point(-1, -1), t.iter), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("erode", st, ot);
+x.register("erode", st, ot);
 function at() {
   return {};
 }
@@ -163,7 +163,7 @@ function lt(a, t) {
   let e = new l.Mat();
   return l.cvtColor(a, e, l.COLOR_RGBA2GRAY), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("grayscale", lt, at);
+x.register("grayscale", lt, at);
 function ct() {
   return {};
 }
@@ -171,7 +171,7 @@ function ht(a, t) {
   let e = new l.Mat();
   return l.bitwise_not(a, e), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("invert", ht, ct);
+x.register("invert", ht, ct);
 function dt() {
   return { size: [3, 3] };
 }
@@ -179,19 +179,19 @@ function ut(a, t) {
   let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
   return l.morphologyEx(a, e, l.MORPH_GRADIENT, i), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("morphologicalGradient", ut, dt);
+x.register("morphologicalGradient", ut, dt);
 function gt(a, t) {
   if (!t.width || !t.height)
     throw new Error("Invalid options: width and height are required");
   let e = new l.Mat();
   return l.resize(a, e, new l.Size(t.width, t.height)), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("resize", gt);
+x.register("resize", gt);
 function ft(a, t) {
   let e = t.center || new l.Point(a.cols / 2, a.rows / 2), i = l.getRotationMatrix2D(e, t.angle, 1), n = new l.Size(a.cols, a.rows), o = new l.Mat();
   return l.warpAffine(a, o, i, n, l.INTER_LINEAR, l.BORDER_CONSTANT, new l.Scalar()), a.delete(), i.delete(), { img: o, width: o.cols, height: o.rows };
 }
-y.register("rotate", ft);
+x.register("rotate", ft);
 function pt() {
   return { lower: 0, upper: 255, type: l.THRESH_BINARY_INV + l.THRESH_OTSU };
 }
@@ -199,15 +199,15 @@ function mt(a, t) {
   let e = new l.Mat();
   return l.threshold(a, e, t.lower, t.upper, t.type), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("threshold", mt, pt);
-function xt(a, t) {
+x.register("threshold", mt, pt);
+function yt(a, t) {
   if (!t.points || !t.bbox)
     throw new Error("Invalid options: points and bbox are required");
   const { points: e, bbox: i } = t;
   let n = new l.Mat(), o = i.x1 - i.x0, r = i.y1 - i.y0, s = [0, 0, o - 1, 0, o - 1, r - 1, 0, r - 1], c = [e.topLeft.x, e.topLeft.y, e.topRight.x, e.topRight.y, e.bottomRight.x, e.bottomRight.y, e.bottomLeft.x, e.bottomLeft.y], h = l.matFromArray(4, 1, l.CV_32FC2, s), d = l.matFromArray(4, 1, l.CV_32FC2, c), u = l.getPerspectiveTransform(d, h), g = new l.Size(o, r);
   return l.warpPerspective(a, n, u, g), u.delete(), d.delete(), h.delete(), a.delete(), { img: n, width: n.cols, height: n.rows };
 }
-y.register("warp", xt);
+x.register("warp", yt);
 const C = class C {
   constructor() {
     f(this, "step", 0);
@@ -260,7 +260,7 @@ const C = class C {
 };
 f(C, "instance", null);
 let T = C;
-class yt {
+class xt {
   constructor(t, e = {}) {
     f(this, "contours");
     let i = { ...wt(), ...e };
@@ -368,7 +368,7 @@ class I {
     });
   }
   execute(t, e) {
-    if (!y.hasOperation(t))
+    if (!x.hasOperation(t))
       throw new Error(`Operation "${t}" not found`);
     try {
       let i = X(t, this.img, e);
@@ -441,10 +441,10 @@ var bt = "";
 let Ct = () => {
   if (typeof import.meta < "u" && import.meta.url) {
     let a = import.meta.url;
-    return L.dirname(a);
+    return P.dirname(a);
   }
   return bt;
-}, N = Ct(), It = L.join(N, "models", "en_PP-OCRv3_det_infer.onnx"), Tt = L.join(N, "models", "en_PP-OCRv3_rec_infer.onnx"), vt = L.join(N, "models", "en_dict.txt"), Rt = { detection: It, recognition: Tt, charactersDictionary: vt }, B = { verbose: !1, debug: !1, debugFolder: "out" }, H = { mean: [0.485, 0.456, 0.406], stdDeviation: [0.229, 0.224, 0.225], maxSideLength: 960, minimumAreaThreshold: 20, paddingVertical: 0.4, paddingHorizontal: 0.6 }, U = { imageHeight: 48, charactersDictionary: [] }, Mt = { model: Rt, detection: H, recognition: U, debugging: B };
+}, N = Ct(), It = P.join(N, "models", "en_PP-OCRv3_det_infer.onnx"), Tt = P.join(N, "models", "en_PP-OCRv3_rec_infer.onnx"), vt = P.join(N, "models", "en_dict.txt"), Rt = { detection: It, recognition: Tt, charactersDictionary: vt }, B = { verbose: !1, debug: !1, debugFolder: "out" }, H = { mean: [0.485, 0.456, 0.406], stdDeviation: [0.229, 0.224, 0.225], maxSideLength: 960, minimumAreaThreshold: 20, paddingVertical: 0.4, paddingHorizontal: 0.6 }, U = { imageHeight: 48, charactersDictionary: [] }, Mt = { model: Rt, detection: H, recognition: U, debugging: B };
 const v = class v {
   constructor(t, e = {}, i = {}) {
     f(this, "options");
@@ -519,7 +519,7 @@ const v = class v {
     const { width: r, height: s, resizeRatio: c, originalWidth: h, originalHeight: d } = e;
     let u = this.tensorToCanvas(t, r, s), g = new I(u);
     g.grayscale().convert({ rtype: l.CV_8UC1 });
-    let p = new yt(g.toMat(), { mode: l.RETR_LIST, method: l.CHAIN_APPROX_SIMPLE }), m = this.extractBoxesFromContours(p, r, s, c, h, d, i, n, o);
+    let p = new xt(g.toMat(), { mode: l.RETR_LIST, method: l.CHAIN_APPROX_SIMPLE }), m = this.extractBoxesFromContours(p, r, s, c, h, d, i, n, o);
     return g.destroy(), p.destroy(), this.log(`Found ${m.length} potential text boxes`), m;
   }
   extractBoxesFromContours(t, e, i, n, o, r, s, c, h) {
@@ -557,7 +557,7 @@ const v = class v {
   }
 };
 f(v, "NUM_CHANNELS", 3);
-let A = v;
+let $ = v;
 const b = class b {
   constructor(t, e = {}, i = {}) {
     f(this, "options");
@@ -690,8 +690,8 @@ const b = class b {
   }
 };
 f(b, "BLANK_INDEX", 0), f(b, "UNK_TOKEN", "<unk>"), f(b, "MIN_CROP_WIDTH", 8);
-let $ = b;
-const x = class x {
+let L = b;
+const y = class y {
   constructor(t) {
     f(this, "options");
     f(this, "detectionSession", null);
@@ -707,19 +707,19 @@ const x = class x {
     try {
       let i = { ...this.options, ...t }, n = O(process.cwd(), i.model.detection), o = O(process.cwd(), i.model.recognition), r = O(process.cwd(), i.model.charactersDictionary);
       this.log(`Loading Detection ONNX model from: ${n}`);
-      let s = P(n).buffer;
+      let s = A(n).buffer;
       this.detectionSession = await E.InferenceSession.create(s), await new Promise((d) => setImmediate(d)), this.log(`Detection ONNX model loaded successfully
 	Loading Recognition ONNX model from: ${o}`), this.log(`input: ${this.detectionSession.inputNames}
 	output: ${this.detectionSession.outputNames}
 	inputMetadata: ${JSON.stringify(this.detectionSession.inputMetadata)}
 	outputMetadata: ${JSON.stringify(this.detectionSession.outputMetadata)}`);
-      let c = P(o).buffer;
+      let c = A(o).buffer;
       this.recognitionSession = await E.InferenceSession.create(c), await new Promise((d) => setImmediate(d)), this.log(`Recognition ONNX model loaded successfully
 	input: ${this.recognitionSession.inputNames}
 	output: ${this.recognitionSession.outputNames}
 	inputMetadata: ${JSON.stringify(this.recognitionSession.inputMetadata)}
 	outputMetadata: ${JSON.stringify(this.recognitionSession.outputMetadata)}`), this.log(`Loading character dictionary from: ${r}`);
-      let h = P(r, "utf-8").split(`
+      let h = A(r, "utf-8").split(`
 `);
       if (!h.length)
         throw new Error(`Character dictionary at ${r} is empty or not found.`);
@@ -729,21 +729,21 @@ const x = class x {
     }
   }
   static async getInstance(t) {
-    return x.instance ? t && await x.instance.initialize(t) : (x.instance = new x(t), await x.instance.initialize()), x.instance;
+    return y.instance ? t && await y.instance.initialize(t) : (y.instance = new y(t), await y.instance.initialize()), y.instance;
   }
   isInitialized() {
     return this.detectionSession !== null && this.recognitionSession !== null;
   }
   static async changeModel(t) {
-    return x.instance ? (await x.instance.destroy(), await x.instance.initialize(t)) : (x.instance = new x(t), await x.instance.initialize()), x.instance;
+    return y.instance ? (await y.instance.destroy(), await y.instance.initialize(t)) : (y.instance = new y(t), await y.instance.initialize()), y.instance;
   }
   static async createInstance(t) {
-    let e = new x(t);
+    let e = new y(t);
     return await e.initialize(), e;
   }
   async recognize(t) {
     await I.initRuntime();
-    let e = new A(this.detectionSession, this.options.detection, this.options.debugging), i = new $(this.recognitionSession, this.options.recognition, this.options.debugging), n = await e.run(t), o = await i.run(t, n);
+    let e = new $(this.detectionSession, this.options.detection, this.options.debugging), i = new L(this.recognitionSession, this.options.recognition, this.options.debugging), n = await e.run(t), o = await i.run(t, n);
     return this.groupResult(o);
   }
   groupResult(t) {
@@ -763,8 +763,22 @@ ${s.text}`, i = [s], o = s.box.height);
     await ((t = this.detectionSession) == null ? void 0 : t.release()), await ((e = this.recognitionSession) == null ? void 0 : e.release());
   }
 };
-f(x, "instance", null);
-let z = x;
+f(y, "instance", null);
+let z = y;
+typeof window < "u" && (L.prototype.processBoxesInParallel = async function(a, t) {
+  const e = this.debugging.debugFolder + "/crops", i = [];
+  for (let n = 0; n < t.length; n++) {
+    const { box: o, index: r } = t[n];
+    await new Promise((s) => setTimeout(s, 10));
+    try {
+      const s = await this.processBox(a, o, r, t.length, e);
+      s !== null && i.push(s);
+    } catch (s) {
+      console.error(`Error in sequential processBox ${r}:`, s);
+    }
+  }
+  return i;
+});
 class Ot {
   /**
    * Instantiate PaddleOCRClient
