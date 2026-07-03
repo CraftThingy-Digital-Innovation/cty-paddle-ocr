@@ -1,12 +1,13 @@
 {
-  "name": "client-side-paddle-ocr",
+  "name": "cty-paddle-ocr",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "build": "vite build"
   },
   "dependencies": {
-    "ppu-paddle-ocr": "^1.3.0",
+    "@napi-rs/canvas": "^0.1.69",
+    "@techstark/opencv-js": "^4.10.0-release.1",
     "onnxruntime-web": "^1.21.0",
     "path-browserify": "^1.0.1"
   },

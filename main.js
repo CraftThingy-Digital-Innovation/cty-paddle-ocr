@@ -1,33 +1,5 @@
-import { PaddleOcrService } from 'ppu-paddle-ocr';
-import { RecognitionService } from 'ppu-paddle-ocr/processor/recognition.service.js';
+import { PaddleOcrService } from './src/index.js';
 import * as ort from 'onnxruntime-web';
-
-// Patch RecognitionService to run sequentially in browser environments
-// This prevents concurrent WebAssembly inferences from locking up the browser main thread.
-if (typeof window !== 'undefined') {
-  RecognitionService.prototype.processBoxesInParallel = async function(sourceCanvas, boxData) {
-    const cropsDebugPath = this.debugging.debugFolder + "/crops";
-    const results = [];
-    
-    for (let i = 0; i < boxData.length; i++) {
-      const { box, index } = boxData[i];
-      
-      // Yield to the browser main thread to keep UI responsive
-      await new Promise(resolve => setTimeout(resolve, 10));
-      
-      try {
-        const result = await this.processBox(sourceCanvas, box, index, boxData.length, cropsDebugPath);
-        if (result !== null) {
-          results.push(result);
-        }
-      } catch (err) {
-        console.error(`Error in sequential processBox ${index}:`, err);
-      }
-    }
-    
-    return results;
-  };
-}
 
 class PaddleOCRClient {
   /**
@@ -69,97 +41,24 @@ class PaddleOCRClient {
     });
 
     console.log('Initializing Client-Side PaddleOCR Service...');
-    
-    // 1. Fetch character dictionary asynchronously (non-blocking)
-    console.log('Fetching characters dictionary from: ' + finalModelConfig.charactersDictionary);
-    const dictResponse = await fetch(finalModelConfig.charactersDictionary);
-    if (!dictResponse.ok) {
-      throw new Error(`Failed to fetch characters dictionary: ${dictResponse.status} ${dictResponse.statusText}`);
-    }
-    const dictText = await dictResponse.text();
-    const charactersDictionary = dictText.split('\n');
-    this.service.options.recognition.charactersDictionary = charactersDictionary;
-    console.log(`Character dictionary loaded with ${charactersDictionary.length} entries.`);
-
-    // 2. Load detection session asynchronously
-    console.log('Loading detection model asynchronously from: ' + finalModelConfig.detection);
-    // ONNX Runtime Web natively supports loading directly from URL asynchronously
-    this.service.detectionSession = await ort.InferenceSession.create(finalModelConfig.detection);
-    console.log('Detection ONNX model loaded successfully.');
-
-    // 3. Load recognition session asynchronously
-    console.log('Loading recognition model asynchronously from: ' + finalModelConfig.recognition);
-    this.service.recognitionSession = await ort.InferenceSession.create(finalModelConfig.recognition);
-    console.log('Recognition ONNX model loaded successfully.');
-    
+    await this.service.initialize();
     console.log('Client-Side PaddleOCR Service initialized successfully.');
   }
 
   /**
    * Runs OCR text and layout extraction on an image canvas, URL, base64, Blob or File.
    * @param {string|HTMLCanvasElement|Blob|File|ArrayBuffer} imageInput
-   * @returns {Promise<{text: string, lines: Array<{text: string, box: object, words: Array}>}>}
    */
   async recognize(imageInput) {
     if (!this.service) {
-      throw new Error('PaddleOCRClient has not been initialized. Please call .init() first.');
+      throw new Error('PaddleOCRClient is not initialized. Please call init() first.');
     }
-
-    const result = await this.service.recognize(imageInput);
-    
-    // Group segments and calculate line-level coordinates
-    const lines = (result.lines || []).map(wordArray => {
-      const lineText = wordArray.map(w => w.text).join(' ');
-      const lineBox = this.getEncompassingBox(wordArray);
-      return {
-        text: lineText,
-        box: lineBox,
-        words: wordArray.map(w => ({
-          text: w.text || '',
-          box: w.box || { x: 0, y: 0, width: 0, height: 0 }
-        }))
-      };
-    });
-
-    return {
-      text: result.text || '',
-      lines
-    };
-  }
-
-  /**
-   * Helper to merge multiple bounding boxes into an encompassing bounding box.
-   */
-  getEncompassingBox(words) {
-    if (!words || words.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-
-    for (const word of words) {
-      const box = word.box;
-      if (box) {
-        minX = Math.min(minX, box.x);
-        minY = Math.min(minY, box.y);
-        maxX = Math.max(maxX, box.x + box.width);
-        maxY = Math.max(maxY, box.y + box.height);
-      }
-    }
-
-    return {
-      x: minX === Infinity ? 0 : minX,
-      y: minY === Infinity ? 0 : minY,
-      width: maxX === -Infinity ? 0 : (maxX - minX),
-      height: maxY === -Infinity ? 0 : (maxY - minY)
-    };
+    return this.service.recognize(imageInput);
   }
 }
 
-// Expose globally to window object for CDN-style usage
+export default PaddleOCRClient;
+export { PaddleOCRClient };
 if (typeof window !== 'undefined') {
   window.PaddleOCRClient = PaddleOCRClient;
 }
-
-export { PaddleOCRClient };
-export default PaddleOCRClient;
