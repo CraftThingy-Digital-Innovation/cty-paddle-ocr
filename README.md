@@ -78,17 +78,47 @@ Mengunduh model ONNX/ORT dan file dictionary kamus secara asinkron lewat HTTP da
 ##### **`async recognize(imageInput)`**
 Mengekstrak teks dan koordinat layout geometris dari input gambar/canvas.
 *   `imageInput` (HTMLImageElement | HTMLCanvasElement | Blob | File | ArrayBuffer): Elemen gambar DOM, elemen canvas, blob file, file lokal, atau buffer biner gambar yang akan dipindai.
-*   **Return Value**: Mengembalikan `Promise` yang menghasilkan objek:
+*   **Return Value**: Mengembalikan `Promise` yang menghasilkan objek berstruktur seperti berikut:
     ```json
     {
-      "text": "Teks lengkap dokumen hasil gabungan...",
+      "text": "CRAFTTHINGY SHOP\nTOTAL: 15000\nTERIMA KASIH",
       "lines": [
         {
-          "text": "Baris teks tertentu",
-          "box": { "x": 10, "y": 15, "width": 120, "height": 30 },
+          "text": "CRAFTTHINGY SHOP",
+          "box": {
+            "x": 45,
+            "y": 20,
+            "width": 210,
+            "height": 28
+          },
           "words": [
-            { "text": "Baris", "box": { "x": 10, "y": 15, "width": 40, "height": 30 } },
-            { "text": "teks", "box": { "x": 55, "y": 15, "width": 35, "height": 30 } }
+            {
+              "text": "CRAFTTHINGY",
+              "box": { "x": 45, "y": 20, "width": 130, "height": 28 }
+            },
+            {
+              "text": "SHOP",
+              "box": { "x": 180, "y": 20, "width": 75, "height": 28 }
+            }
+          ]
+        },
+        {
+          "text": "TOTAL: 15000",
+          "box": {
+            "x": 45,
+            "y": 60,
+            "width": 150,
+            "height": 24
+          },
+          "words": [
+            {
+              "text": "TOTAL:",
+              "box": { "x": 45, "y": 60, "width": 70, "height": 24 }
+            },
+            {
+              "text": "15000",
+              "box": { "x": 120, "y": 60, "width": 75, "height": 24 }
+            }
           ]
         }
       ]
@@ -225,17 +255,47 @@ Asynchronously downloads ONNX/ORT model binaries and character files over HTTP a
 ##### **`async recognize(imageInput)`**
 Extracts text boundaries and text lines from a given graphical element.
 *   `imageInput` (HTMLImageElement | HTMLCanvasElement | Blob | File | ArrayBuffer): The source image/canvas or file binary to scan.
-*   **Return Value**: Returns a `Promise` resolving to:
+*   **Return Value**: Returns a `Promise` resolving to the following populated schema:
     ```json
     {
-      "text": "The compiled string of all recognized text lines...",
+      "text": "CRAFTTHINGY SHOP\nTOTAL: 15000\nTERIMA KASIH",
       "lines": [
         {
-          "text": "Specific line string content",
-          "box": { "x": 10, "y": 15, "width": 120, "height": 30 },
+          "text": "CRAFTTHINGY SHOP",
+          "box": {
+            "x": 45,
+            "y": 20,
+            "width": 210,
+            "height": 28
+          },
           "words": [
-            { "text": "Specific", "box": { "x": 10, "y": 15, "width": 40, "height": 30 } },
-            { "text": "line", "box": { "x": 55, "y": 15, "width": 35, "height": 30 } }
+            {
+              "text": "CRAFTTHINGY",
+              "box": { "x": 45, "y": 20, "width": 130, "height": 28 }
+            },
+            {
+              "text": "SHOP",
+              "box": { "x": 180, "y": 20, "width": 75, "height": 28 }
+            }
+          ]
+        },
+        {
+          "text": "TOTAL: 15000",
+          "box": {
+            "x": 45,
+            "y": 60,
+            "width": 150,
+            "height": 24
+          },
+          "words": [
+            {
+              "text": "TOTAL:",
+              "box": { "x": 45, "y": 60, "width": 70, "height": 24 }
+            },
+            {
+              "text": "15000",
+              "box": { "x": 120, "y": 60, "width": 75, "height": 24 }
+            }
           ]
         }
       ]
