@@ -6,9 +6,9 @@
 
 ## Bahasa Indonesia
 
-Proyek ini berfungsi sebagai **Vite-based compiler / bundler** yang mengubah library Node.js server-side `ppu-paddle-ocr` menjadi modul JavaScript siap pakai di sisi client (web browser).
+Proyek ini merupakan **cty-paddle-ocr**, sebuah library (SDK) PaddleOCR mandiri, ringkas, dan berkinerja tinggi yang berjalan secara **isomorphic** (baik di sisi client/web browser menggunakan WebAssembly maupun di sisi server-side Node.js).
 
-Pustaka biner bawaan `ppu-paddle-ocr` memiliki ketergantungan native C++ (seperti OpenCV Node dan ONNX Runtime Node) yang tidak didukung oleh browser. Proyek ini memotong dan mengganti ketergantungan tersebut menggunakan teknik **Shimming** dan **Compile-Time Aliasing**.
+Pustaka ini tidak lagi bergantung pada dependency eksternal `ppu-paddle-ocr` atau `ppu-ocv`. Seluruh logika pemrosesan gambar OpenCV (`cty-ocv`) dan eksekusi ONNX Runtime (`cty-ocr`) telah di-porting secara lokal dan disempurnakan. Modul ini secara dinamis berpindah ke pemrosesan sekuensial (dengan jeda `setTimeout` yield) di browser untuk mencegah tab membeku, dan berjalan paralel (multi-threaded) di Node.js untuk performa server tertinggi.
 
 ### 1. Cara Kerja & Shimming Engine
 
@@ -33,7 +33,7 @@ cd D:\CraftThingy\client-side-paddle-ocr-project
 ```
 
 #### Langkah B: Instal Dependencies
-Unduh Vite beserta pustaka `ppu-paddle-ocr` asli dari npm registry:
+Unduh dependencies standar yang diperlukan:
 ```bash
 npm install
 ```
@@ -66,10 +66,14 @@ Pustaka pembungkus (wrapper) utama untuk menjalankan deteksi & rekognisi teks Pa
 *   `options.maxSideLength` (number): Skala sisi gambar maksimum untuk detektor OCR. Nilai yang lebih tinggi (seperti `2000`) meningkatkan akurasi deteksi simbol/teks kecil, namun memakan lebih banyak memori (default: `2000`).
 
 ##### **`async init(modelConfig)`**
-Mengunduh model ONNX dan file dictionary kamus secara asinkron lewat HTTP dan memuatnya ke runtime WebAssembly.
-*   `modelConfig.detection` (string): URL path file model deteksi ONNX (default: `'/models/en_PP-OCRv3_det_infer.onnx'`).
-*   `modelConfig.recognition` (string): URL path file model rekognisi ONNX (default: `'/models/en_PP-OCRv3_rec_infer.onnx'`).
+Mengunduh model ONNX/ORT dan file dictionary kamus secara asinkron lewat HTTP dan memuatnya ke runtime WebAssembly.
+*   `modelConfig.detection` (string): URL path file model deteksi ONNX/ORT (default: `'/models/en_PP-OCRv3_det_infer.onnx'`).
+*   `modelConfig.recognition` (string): URL path file model rekognisi ONNX/ORT (default: `'/models/en_PP-OCRv3_rec_infer.onnx'`).
 *   `modelConfig.charactersDictionary` (string): URL path file kamus karakter (default: `'/models/en_dict.txt'`).
+
+> [!TIP]
+> Berkas model ONNX dan ORT (teroptimasi FlatBuffers untuk browser) yang kompatibel dapat diunduh langsung dari repositori model resmi organisasi Anda:
+> **[cty-paddle-ocr-models](https://github.com/CraftThingy-Digital-Innovation/cty-paddle-ocr-models)**.
 
 ##### **`async recognize(imageInput)`**
 Mengekstrak teks dan koordinat layout geometris dari input gambar/canvas.
@@ -149,9 +153,9 @@ async function scanPdfPage(pdfUrl, pageNum) {
 
 ## English
 
-This project serves as a **Vite-based compiler / bundler** that transforms the server-side Node.js `ppu-paddle-ocr` library into a client-side JavaScript module ready for web browsers.
+This project is **cty-paddle-ocr**, a lightweight, high-performance, standalone PaddleOCR SDK designed for **isomorphic** execution (running anywhere JavaScript runs: Web browsers using WebAssembly and Node.js servers).
 
-Since `ppu-paddle-ocr` relies on native C++ bindings (such as node-opencv and node-onnxruntime), it cannot run directly in browsers. This project replaces those dependencies using **Shimming** and **Compile-Time Aliasing**.
+It has been decoupled from the external `ppu-paddle-ocr` and `ppu-ocv` packages. The entire OpenCV wrapper engine (`cty-ocv`) and ONNX session wrappers (`cty-ocr`) have been ported locally. It dynamically scales to run sequentially (with `setTimeout` yields) on single-threaded browser runtimes to prevent freezing, and concurrently (multi-threaded) on Node.js backends for high-performance server environments.
 
 ### 1. Architecture & Shimming Engine
 
@@ -176,7 +180,7 @@ cd D:\CraftThingy\client-side-paddle-ocr-project
 ```
 
 #### Step B: Install Dependencies
-Download Vite and the original `ppu-paddle-ocr` package:
+Download the standard required dependencies:
 ```bash
 npm install
 ```
@@ -209,10 +213,14 @@ The primary library wrapper class to initialize and run PaddleOCR client-side in
 *   `options.maxSideLength` (number): Scaled limit of the maximum side length for the text detector. Larger values (e.g. `2000`) increase accuracy for small/blurry characters but consume more memory (default: `2000`).
 
 ##### **`async init(modelConfig)`**
-Asynchronously downloads ONNX model binaries and character files over HTTP and compiles them into WebAssembly.
-*   `modelConfig.detection` (string): URL path to the detection ONNX model file (default: `'/models/en_PP-OCRv3_det_infer.onnx'`).
-*   `modelConfig.recognition` (string): URL path to the recognition ONNX model file (default: `'/models/en_PP-OCRv3_rec_infer.onnx'`).
+Asynchronously downloads ONNX/ORT model binaries and character files over HTTP and compiles them into WebAssembly.
+*   `modelConfig.detection` (string): URL path to the detection ONNX/ORT model file (default: `'/models/en_PP-OCRv3_det_infer.onnx'`).
+*   `modelConfig.recognition` (string): URL path to the recognition ONNX/ORT model file (default: `'/models/en_PP-OCRv3_rec_infer.onnx'`).
 *   `modelConfig.charactersDictionary` (string): URL path to the character dictionary text file (default: `'/models/en_dict.txt'`).
+
+> [!TIP]
+> The pre-converted ONNX and optimized ORT (FlatBuffers-serialized) model files can be downloaded from your organization's model repository:
+> **[cty-paddle-ocr-models](https://github.com/CraftThingy-Digital-Innovation/cty-paddle-ocr-models)**.
 
 ##### **`async recognize(imageInput)`**
 Extracts text boundaries and text lines from a given graphical element.
@@ -295,16 +303,16 @@ async function scanPdfPage(pdfUrl, pageNum) {
 ### Bahasa Indonesia
 Proyek ini dikembangkan oleh **CraftThingy Digital Innovation (Alif Nurhidayat)**. Proyek ini dibangun di atas fondasi inovasi open-source berikut:
 1.  **Baidu PaddleOCR**: Model deteksi & pengenalan teks kelas dunia yang menjadi inti dari sistem OCR ini.
-2.  **ppu-paddle-ocr**: Pustaka Node.js yang kami porting, shimming, dan bundle agar dapat berjalan di web browser secara penuh.
-3.  **ONNX Runtime Web (Microsoft)**: Engine eksekusi WebAssembly yang menjalankan model neural network `.onnx` di browser.
+2.  **cty-paddle-ocr-models**: Repositori model resmi kami tempat menampung dan mendistribusikan model ONNX/ORT secara mandiri.
+3.  **ONNX Runtime Web (Microsoft)**: Engine eksekusi WebAssembly yang menjalankan model neural network di browser.
 4.  **OpenCV.js**: Pustaka pengolahan citra komputer yang menangani transformasi geometris dan cropping karakter.
 5.  **PDF.js (Mozilla)**: Pustaka rendering dokumen PDF yang memproses halaman dokumen menjadi frame canvas.
 
 ### English
 This project is developed by **CraftThingy Digital Innovation (Alif Nurhidayat)**. It is built upon the following open-source projects and innovations:
 1.  **Baidu PaddleOCR**: The world-class OCR system providing the core deep learning models for text detection and recognition.
-2.  **ppu-paddle-ocr**: The server-side Node.js package which we port, shim, and bundle to run inside browser clients.
-3.  **ONNX Runtime Web (Microsoft)**: The WebAssembly execution runtime that powers the `.onnx` model inference in browser clients.
+2.  **cty-paddle-ocr-models**: Our official model repository hosting pre-converted ONNX and optimized ORT models.
+3.  **ONNX Runtime Web (Microsoft)**: The WebAssembly execution runtime that powers the model inference in browser clients.
 4.  **OpenCV.js**: The computer vision engine handling character cropping and geometry conversions.
 5.  **PDF.js (Mozilla)**: The document rendering library enabling multi-page PDF scanning inside the browser canvas.
 
