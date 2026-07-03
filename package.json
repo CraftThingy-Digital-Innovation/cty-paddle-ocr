@@ -2,6 +2,18 @@
   "name": "cty-paddle-ocr",
   "version": "1.0.0",
   "type": "module",
+  "main": "./dist/paddle-ocr-client.umd.js",
+  "module": "./dist/paddle-ocr-client.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/paddle-ocr-client.es.js",
+      "require": "./dist/paddle-ocr-client.umd.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "vite build"
   },
