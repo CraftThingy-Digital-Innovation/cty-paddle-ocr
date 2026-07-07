@@ -1,10 +1,10 @@
 var Y = Object.defineProperty;
 var q = (a, t, e) => t in a ? Y(a, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : a[t] = e;
 var m = (a, t, e) => q(a, typeof t != "symbol" ? t + "" : t, e);
-import * as R from "onnxruntime-node";
+import * as I from "onnxruntime-node";
 import l from "@techstark/opencv-js";
 import "onnxruntime-web";
-function v(a, t) {
+function O(a, t) {
   const e = typeof t == "string" && t.toLowerCase().includes("utf-8") || typeof t == "object" && t.encoding && t.encoding.toLowerCase().includes("utf-8"), i = new XMLHttpRequest();
   if (i.open("GET", a, !1), e) {
     if (i.send(), i.status !== 200 && i.status !== 0)
@@ -44,7 +44,7 @@ function N() {
   };
 }
 const J = {
-  readFileSync: v,
+  readFileSync: O,
   existsSync: W,
   mkdirSync: F,
   readdirSync: k,
@@ -56,7 +56,7 @@ const J = {
   default: J,
   existsSync: W,
   mkdirSync: F,
-  readFileSync: v,
+  readFileSync: O,
   readdirSync: k,
   unlinkSync: j
 }, Symbol.toStringTag, { value: "Module" }));
@@ -83,9 +83,9 @@ const $ = { resolve: M, join: E, dirname: V }, Z = /* @__PURE__ */ Object.freeze
   dirname: V,
   join: E,
   resolve: M
-}, Symbol.toStringTag, { value: "Module" })), L = typeof HTMLCanvasElement < "u" ? HTMLCanvasElement : class {
+}, Symbol.toStringTag, { value: "Module" })), D = typeof HTMLCanvasElement < "u" ? HTMLCanvasElement : class {
 };
-function P(a, t) {
+function L(a, t) {
   const e = document.createElement("canvas");
   return e.width = a, e.height = t, e;
 }
@@ -208,49 +208,49 @@ y.register("invert", yt, xt);
 function bt() {
   return { size: [3, 3] };
 }
-function Tt(a, t) {
+function vt(a, t) {
   let e = new l.Mat(), i = l.getStructuringElement(l.MORPH_RECT, new l.Size(t.size[0], t.size[1]));
   return l.morphologyEx(a, e, l.MORPH_GRADIENT, i), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("morphologicalGradient", Tt, bt);
-function Ct(a, t) {
+y.register("morphologicalGradient", vt, bt);
+function Tt(a, t) {
   if (!t.width || !t.height)
     throw new Error("Invalid options: width and height are required");
   let e = new l.Mat();
   return l.resize(a, e, new l.Size(t.width, t.height)), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("resize", Ct);
-function It(a, t) {
+y.register("resize", Tt);
+function Ct(a, t) {
   let e = t.center || new l.Point(a.cols / 2, a.rows / 2), i = l.getRotationMatrix2D(e, t.angle, 1), r = new l.Size(a.cols, a.rows), n = new l.Mat();
   return l.warpAffine(a, n, i, r, l.INTER_LINEAR, l.BORDER_CONSTANT, new l.Scalar()), a.delete(), i.delete(), { img: n, width: n.cols, height: n.rows };
 }
-y.register("rotate", It);
-function Rt() {
+y.register("rotate", Ct);
+function It() {
   return { lower: 0, upper: 255, type: l.THRESH_BINARY_INV + l.THRESH_OTSU };
 }
-function Ot(a, t) {
+function Rt(a, t) {
   let e = new l.Mat();
   return l.threshold(a, e, t.lower, t.upper, t.type), a.delete(), { img: e, width: e.cols, height: e.rows };
 }
-y.register("threshold", Ot, Rt);
-function vt(a, t) {
+y.register("threshold", Rt, It);
+function Ot(a, t) {
   if (!t.points || !t.bbox)
     throw new Error("Invalid options: points and bbox are required");
   const { points: e, bbox: i } = t;
   let r = new l.Mat(), n = i.x1 - i.x0, o = i.y1 - i.y0, s = [0, 0, n - 1, 0, n - 1, o - 1, 0, o - 1], c = [e.topLeft.x, e.topLeft.y, e.topRight.x, e.topRight.y, e.bottomRight.x, e.bottomRight.y, e.bottomLeft.x, e.bottomLeft.y], u = l.matFromArray(4, 1, l.CV_32FC2, s), h = l.matFromArray(4, 1, l.CV_32FC2, c), d = l.getPerspectiveTransform(h, u), g = new l.Size(n, o);
   return l.warpPerspective(a, r, d, g), d.delete(), h.delete(), u.delete(), a.delete(), { img: r, width: r.cols, height: r.rows };
 }
-y.register("warp", vt);
-const C = class C {
+y.register("warp", Ot);
+const T = class T {
   constructor() {
     m(this, "step", 0);
   }
   static getInstance() {
-    return C.instance || (C.instance = new C()), C.instance;
+    return T.instance || (T.instance = new T()), T.instance;
   }
   crop(t) {
     const { bbox: e, canvas: i } = t;
-    let r = P(e.x1 - e.x0, e.y1 - e.y0);
+    let r = L(e.x1 - e.x0, e.y1 - e.y0);
     return r.getContext("2d").drawImage(i, e.x0, e.y0, e.x1 - e.x0, e.y1 - e.y0, 0, 0, r.width, r.height), r;
   }
   isDirty(t) {
@@ -291,8 +291,8 @@ const C = class C {
     }
   }
 };
-m(C, "instance", null);
-let O = C;
+m(T, "instance", null);
+let R = T;
 class Mt {
   constructor(t, e = {}) {
     m(this, "contours");
@@ -362,12 +362,12 @@ class Mt {
 function Et() {
   return { mode: l.RETR_EXTERNAL, method: l.CHAIN_APPROX_SIMPLE };
 }
-class I {
+class C {
   constructor(t) {
     m(this, "img");
     m(this, "width");
     m(this, "height");
-    if (t instanceof L) {
+    if (t instanceof D) {
       let i = t.getContext("2d").getImageData(0, 0, t.width, t.height);
       this.img = l.matFromImageData(i), this.width = t.width, this.height = t.height;
     } else if (t instanceof l.Mat)
@@ -376,8 +376,8 @@ class I {
       throw new Error("Invalid source type. Must be either Canvas or cv.Mat.");
   }
   static async prepareCanvas(t) {
-    if (t instanceof L) return t;
-    let e = await tt(t), i = P(e.width, e.height);
+    if (t instanceof D) return t;
+    let e = await tt(t), i = L(e.width, e.height);
     return i.getContext("2d").drawImage(e, 0, 0), i;
   }
   static async prepareBuffer(t) {
@@ -460,7 +460,7 @@ class I {
     return this.img;
   }
   toCanvas() {
-    let t = P(this.width, this.height), e = t.getContext("2d"), i = e.createImageData(this.width, this.height);
+    let t = L(this.width, this.height), e = t.getContext("2d"), i = e.createImageData(this.width, this.height);
     if (this.img.channels() === 1) {
       let r = i.data, n = new Uint8Array(this.img.data);
       for (let o = 0; o < n.length; o++)
@@ -470,16 +470,16 @@ class I {
     return e.putImageData(i, 0, 0), t;
   }
 }
-let Dt = () => {
+let Pt = () => {
   if (typeof import.meta < "u" && import.meta.url) {
     let a = import.meta.url;
     return $.dirname(a);
   }
   return "";
-}, U = Dt();
-const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "models", "en_PP-OCRv3_rec_infer.onnx"), $t = $.join(U, "models", "en_dict.txt"), St = {
-  detection: Lt,
-  recognition: Pt,
+}, U = Pt();
+const Dt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Lt = $.join(U, "models", "en_PP-OCRv3_rec_infer.onnx"), $t = $.join(U, "models", "en_dict.txt"), St = {
+  detection: Dt,
+  recognition: Lt,
   charactersDictionary: $t
 }, G = {
   verbose: !1,
@@ -500,7 +500,7 @@ const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "mo
   detection: X,
   recognition: K,
   debugging: G
-}, D = class D {
+}, P = class P {
   constructor(t, e = {}, i = {}) {
     m(this, "options");
     m(this, "debugging");
@@ -523,9 +523,9 @@ const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "mo
     }
   }
   async preprocessDetection(t) {
-    let e = t instanceof L ? t : await I.prepareCanvas(t);
+    let e = t instanceof D ? t : await C.prepareCanvas(t);
     const { width: i, height: r } = e, { width: n, height: o, ratio: s } = this.calculateResizeDimensions(i, r);
-    let c = new I(e), u = c.resize({ width: n, height: o }).toCanvas();
+    let c = new C(e), u = c.resize({ width: n, height: o }).toCanvas();
     c.destroy();
     let h = Math.ceil(n / 32) * 32, d = Math.ceil(o / 32) * 32, g = this.createPaddedCanvas(u, n, o, h, d), f = this.imageToTensor(g, h, d);
     return this.log(`Detection preprocessed: original(${i}x${r}), model_input(${h}x${d}), resize_ratio: ${s.toFixed(4)}`), { tensor: f, width: h, height: d, resizeRatio: s, originalWidth: i, originalHeight: r };
@@ -535,16 +535,16 @@ const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "mo
     return Math.max(n, r) > i && (o = i / (n > r ? n : r), r = Math.round(r * o), n = Math.round(n * o)), { width: r, height: n, ratio: o };
   }
   createPaddedCanvas(t, e, i, r, n) {
-    let o = P(r, n);
+    let o = L(r, n);
     return o.getContext("2d").drawImage(t, 0, 0, e, i), o;
   }
   imageToTensor(t, e, i) {
-    let o = t.getContext("2d").getImageData(0, 0, e, i).data, s = new Float32Array(D.NUM_CHANNELS * i * e);
+    let o = t.getContext("2d").getImageData(0, 0, e, i).data, s = new Float32Array(P.NUM_CHANNELS * i * e);
     const { mean: c, stdDeviation: u } = this.options;
     for (let h = 0; h < i; h++)
       for (let d = 0; d < e; d++) {
         let g = (h * e + d) * 4, f = h * e + d;
-        for (let p = 0; p < D.NUM_CHANNELS; p++) {
+        for (let p = 0; p < P.NUM_CHANNELS; p++) {
           let b = (o[g + p] / 255 - c[p]) / u[p];
           s[p * i * e + f] = b;
         }
@@ -554,14 +554,14 @@ const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "mo
   async runInference(t, e, i) {
     try {
       this.log("Running detection inference...");
-      let n = { x: new R.Tensor("float32", t, [1, 3, i, e]) }, s = (await this.session.run(n))[this.session.outputNames[0] || "sigmoid_0.tmp_0"];
+      let n = { x: new I.Tensor("float32", t, [1, 3, i, e]) }, s = (await this.session.run(n))[this.session.outputNames[0] || "sigmoid_0.tmp_0"];
       return this.log("Detection inference complete!"), s ? s.data : (console.error(`Output tensor ${this.session.outputNames[0]} not found in detection results`), null);
     } catch (r) {
       throw console.error("Error during model inference:", r instanceof Error ? r.message : String(r)), r;
     }
   }
   tensorToCanvas(t, e, i) {
-    let r = P(e, i), n = r.getContext("2d"), o = n.createImageData(e, i), s = o.data;
+    let r = L(e, i), n = r.getContext("2d"), o = n.createImageData(e, i), s = o.data;
     for (let c = 0; c < i; c++)
       for (let u = 0; u < e; u++) {
         let h = c * e + u, d = t[h] || 0, g = Math.round(d * 255), f = (c * e + u) * 4;
@@ -572,7 +572,7 @@ const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "mo
   postprocessDetection(t, e, i = this.options.minimumAreaThreshold || 20, r = this.options.paddingVertical || 0.4, n = this.options.paddingHorizontal || 0.6) {
     this.log("Post-processing detection results...");
     const { width: o, height: s, resizeRatio: c, originalWidth: u, originalHeight: h } = e;
-    let d = this.tensorToCanvas(t, o, s), g = new I(d);
+    let d = this.tensorToCanvas(t, o, s), g = new C(d);
     g.grayscale().convert({ rtype: l.CV_8UC1 });
     let f = new Mt(g.toMat(), { mode: l.RETR_LIST, method: l.CHAIN_APPROX_SIMPLE }), p = this.extractBoxesFromContours(f, o, s, c, u, h, i, r, n);
     return g.destroy(), f.destroy(), this.log(`Found ${p.length} potential text boxes`), p;
@@ -599,27 +599,27 @@ const Lt = $.join(U, "models", "en_PP-OCRv3_det_infer.onnx"), Pt = $.join(U, "mo
   }
   async debugDetectionCanvas(t, e, i) {
     let r = this.tensorToCanvas(t, e, i), n = this.debugging.debugFolder;
-    await O.getInstance().saveImage({ canvas: r, filename: "detection-debug", path: n }), this.log(`Probability map visualized and saved to: ${n}`);
+    await R.getInstance().saveImage({ canvas: r, filename: "detection-debug", path: n }), this.log(`Probability map visualized and saved to: ${n}`);
   }
   async debugDetectedBoxes(t, e) {
-    let i = t instanceof L ? t : await I.prepareCanvas(t), r = i.getContext("2d"), n = O.getInstance();
+    let i = t instanceof D ? t : await C.prepareCanvas(t), r = i.getContext("2d"), n = R.getInstance();
     for (let s of e) {
       const { x: c, y: u, width: h, height: d } = s;
       n.drawLine({ ctx: r, x: c, y: u, width: h, height: d });
     }
     let o = this.debugging.debugFolder;
-    await O.getInstance().saveImage({ canvas: i, filename: "boxes-debug", path: o }), this.log(`Boxes visualized and saved to: ${o}`);
+    await R.getInstance().saveImage({ canvas: i, filename: "boxes-debug", path: o }), this.log(`Boxes visualized and saved to: ${o}`);
   }
 };
-m(D, "NUM_CHANNELS", 3);
-let A = D;
-const T = class T {
+m(P, "NUM_CHANNELS", 3);
+let A = P;
+const v = class v {
   constructor(t, e = {}, i = {}) {
     m(this, "options");
     m(this, "debugging");
     m(this, "session");
     m(this, "toolkit");
-    this.session = t, this.toolkit = O.getInstance(), this.options = { ...K, ...e }, this.debugging = { ...G, ...i };
+    this.session = t, this.toolkit = R.getInstance(), this.options = { ...K, ...e }, this.debugging = { ...G, ...i };
   }
   log(t) {
     this.debugging.verbose && console.log(`[RecognitionService] ${t}`);
@@ -627,7 +627,7 @@ const T = class T {
   async run(t, e) {
     this.log("Starting text recognition process");
     try {
-      let i = t instanceof L ? t : await I.prepareCanvas(t), r = this.filterValidBoxes(e), n = await this.processBoxesInParallel(i, r);
+      let i = t instanceof D ? t : await C.prepareCanvas(t), r = this.filterValidBoxes(e), n = await this.processBoxesInParallel(i, r);
       return this.sortResultsByReadingOrder(n);
     } catch (i) {
       return console.error("Error during text recognition:", i instanceof Error ? i.message : String(i)), [];
@@ -689,14 +689,14 @@ const T = class T {
   }
   async recognizeText(t) {
     const { imageTensor: e, tensorWidth: i, tensorHeight: r } = await this.preprocessImage(t);
-    let n = new R.Tensor("float32", e, [1, 3, r, i]), o = await this.runInference(n);
+    let n = new I.Tensor("float32", e, [1, 3, r, i]), o = await this.runInference(n);
     return this.decodeResults(o);
   }
   async preprocessImage(t) {
-    let e = new I(t), i = this.options.imageHeight, r = e.width, n = e.height;
+    let e = new C(t), i = this.options.imageHeight, r = e.width, n = e.height;
     if (n === 0 || r === 0)
       throw new Error(`Crop dimensions are zero: ${r}x${n}`);
-    let o = r / n, s = Math.max(T.MIN_CROP_WIDTH, Math.round(i * o));
+    let o = r / n, s = Math.max(v.MIN_CROP_WIDTH, Math.round(i * o));
     e.resize({ width: s, height: i });
     let c = this.createImageTensor(e, s, i);
     return e.destroy(), { imageTensor: c, tensorWidth: s, tensorHeight: i };
@@ -727,7 +727,7 @@ const T = class T {
     let n = "", o = -1;
     for (let s = 0; s < e; s++) {
       const { index: c } = this.findMaxProbabilityClass(t, s, i);
-      if (c === T.BLANK_INDEX || c === o) {
+      if (c === v.BLANK_INDEX || c === o) {
         o = c;
         continue;
       }
@@ -740,7 +740,7 @@ const T = class T {
   appendCharacterToText(t, e, i) {
     let r = e[t];
     if (t === e.length - 1) {
-      if (r === T.UNK_TOKEN)
+      if (r === v.UNK_TOKEN)
         return;
       i(" ");
       return;
@@ -759,8 +759,8 @@ const T = class T {
     return t >= 0 && t < e.length;
   }
 };
-m(T, "BLANK_INDEX", 0), m(T, "UNK_TOKEN", "<unk>"), m(T, "MIN_CROP_WIDTH", 8);
-let B = T;
+m(v, "BLANK_INDEX", 0), m(v, "UNK_TOKEN", "<unk>"), m(v, "MIN_CROP_WIDTH", 8);
+let B = v;
 const x = class x {
   constructor(t) {
     m(this, "options");
@@ -784,20 +784,32 @@ const x = class x {
         const h = (await c.text()).split(`
 `);
         this.options.recognition.charactersDictionary = h, this.log(`Character dictionary loaded with ${h.length} entries.`), this.log(`Browser: Loading Detection model from: ${n}`);
-        const g = n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.detectionSession = await R.InferenceSession.create(n, g), this.log(`Browser: Loading Recognition model from: ${o}`);
-        const p = o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.recognitionSession = await R.InferenceSession.create(o, p);
+        const g = {
+          ...n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {},
+          ...r.executionProviders ? { executionProviders: r.executionProviders } : {}
+        };
+        this.detectionSession = await I.InferenceSession.create(n, g), this.log(`Browser: Loading Recognition model from: ${o}`);
+        const p = {
+          ...o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {},
+          ...r.executionProviders ? { executionProviders: r.executionProviders } : {}
+        };
+        this.recognitionSession = await I.InferenceSession.create(o, p);
       } else {
         let c = M(process.cwd(), n), u = M(process.cwd(), o), h = M(process.cwd(), s);
         this.log(`Node: Loading Detection ONNX model from: ${c}`);
-        let d = v(c).buffer;
-        const f = n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.detectionSession = await R.InferenceSession.create(d, f), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading Recognition ONNX model from: ${u}`);
-        let p = v(u).buffer;
-        const b = o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {};
-        this.recognitionSession = await R.InferenceSession.create(p, b), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading character dictionary from: ${h}`);
-        let S = v(h, "utf-8").split(`
+        let d = O(c).buffer;
+        const f = {
+          ...n.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {},
+          ...r.executionProviders ? { executionProviders: r.executionProviders } : {}
+        };
+        this.detectionSession = await I.InferenceSession.create(d, f), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading Recognition ONNX model from: ${u}`);
+        let p = O(u).buffer;
+        const b = {
+          ...o.toLowerCase().endsWith(".ort") ? { graphOptimizationLevel: "disabled" } : {},
+          ...r.executionProviders ? { executionProviders: r.executionProviders } : {}
+        };
+        this.recognitionSession = await I.InferenceSession.create(p, b), await new Promise((z) => setImmediate(z)), this.log(`Node: Loading character dictionary from: ${h}`);
+        let S = O(h, "utf-8").split(`
 `);
         if (!S.length)
           throw new Error(`Character dictionary at ${h} is empty or not found.`);
@@ -822,7 +834,7 @@ const x = class x {
     return await e.initialize(), e;
   }
   async recognize(t) {
-    await I.initRuntime();
+    await C.initRuntime();
     let e = new A(this.detectionSession, this.options.detection, this.options.debugging), i = new B(this.recognitionSession, this.options.recognition, this.options.debugging), r = await e.run(t), n = await i.run(t, r);
     return this.groupResult(n);
   }
@@ -932,7 +944,10 @@ class At {
    * @param {object} options Configurations (e.g. { verbose: true, detection: { maxSideLength: 2000 } })
    */
   constructor(t = {}) {
-    this.options = t, this.service = null;
+    this.options = {
+      executionProviders: ["webgpu", "wasm"],
+      ...t
+    }, this.service = null;
   }
   /**
    * Initialize and load model assets via HTTP GET requests
@@ -949,6 +964,7 @@ class At {
     };
     this.service = new _({
       model: i,
+      executionProviders: this.options.executionProviders,
       detection: {
         maxSideLength: this.options.maxSideLength || 2e3,
         ...this.options.detection

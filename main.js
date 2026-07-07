@@ -8,7 +8,7 @@ class PaddleOCRClient {
    */
   constructor(options = {}) {
     this.options = {
-      executionProviders: ['webgpu', 'webgl', 'wasm'],
+      executionProviders: ['webgpu', 'wasm'],
       ...options
     };
     this.service = null;
