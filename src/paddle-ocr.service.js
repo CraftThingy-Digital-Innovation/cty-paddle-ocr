@@ -43,12 +43,18 @@ export class PaddleOcrService {
 
         this.log(`Browser: Loading Detection model from: ${detectionPath}`);
         const isDetOrt = detectionPath.toLowerCase().endsWith('.ort');
-        const detOptions = isDetOrt ? { graphOptimizationLevel: 'disabled' } : {};
+        const detOptions = {
+          ...(isDetOrt ? { graphOptimizationLevel: 'disabled' } : {}),
+          ...(effectiveOptions.executionProviders ? { executionProviders: effectiveOptions.executionProviders } : {})
+        };
         this.detectionSession = await ort.InferenceSession.create(detectionPath, detOptions);
 
         this.log(`Browser: Loading Recognition model from: ${recognitionPath}`);
         const isRecOrt = recognitionPath.toLowerCase().endsWith('.ort');
-        const recOptions = isRecOrt ? { graphOptimizationLevel: 'disabled' } : {};
+        const recOptions = {
+          ...(isRecOrt ? { graphOptimizationLevel: 'disabled' } : {}),
+          ...(effectiveOptions.executionProviders ? { executionProviders: effectiveOptions.executionProviders } : {})
+        };
         this.recognitionSession = await ort.InferenceSession.create(recognitionPath, recOptions);
       } else {
         // Node.js server execution path
@@ -59,7 +65,10 @@ export class PaddleOcrService {
         this.log(`Node: Loading Detection ONNX model from: ${resolvedDetectionPath}`);
         let detModelBuffer = readFileSync(resolvedDetectionPath).buffer;
         const isDetOrt = detectionPath.toLowerCase().endsWith('.ort');
-        const detOptions = isDetOrt ? { graphOptimizationLevel: 'disabled' } : {};
+        const detOptions = {
+          ...(isDetOrt ? { graphOptimizationLevel: 'disabled' } : {}),
+          ...(effectiveOptions.executionProviders ? { executionProviders: effectiveOptions.executionProviders } : {})
+        };
         this.detectionSession = await ort.InferenceSession.create(detModelBuffer, detOptions);
         
         await new Promise((resolve) => setImmediate(resolve));
@@ -67,7 +76,10 @@ export class PaddleOcrService {
         this.log(`Node: Loading Recognition ONNX model from: ${resolvedRecognitionPath}`);
         let recModelBuffer = readFileSync(resolvedRecognitionPath).buffer;
         const isRecOrt = recognitionPath.toLowerCase().endsWith('.ort');
-        const recOptions = isRecOrt ? { graphOptimizationLevel: 'disabled' } : {};
+        const recOptions = {
+          ...(isRecOrt ? { graphOptimizationLevel: 'disabled' } : {}),
+          ...(effectiveOptions.executionProviders ? { executionProviders: effectiveOptions.executionProviders } : {})
+        };
         this.recognitionSession = await ort.InferenceSession.create(recModelBuffer, recOptions);
         
         await new Promise((resolve) => setImmediate(resolve));

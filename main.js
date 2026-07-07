@@ -7,7 +7,10 @@ class PaddleOCRClient {
    * @param {object} options Configurations (e.g. { verbose: true, detection: { maxSideLength: 2000 } })
    */
   constructor(options = {}) {
-    this.options = options;
+    this.options = {
+      executionProviders: ['webgpu', 'webgl', 'wasm'],
+      ...options
+    };
     this.service = null;
   }
 
@@ -30,6 +33,7 @@ class PaddleOCRClient {
     // Instantiate native service using our options and model endpoints
     this.service = new PaddleOcrService({
       model: finalModelConfig,
+      executionProviders: this.options.executionProviders,
       detection: {
         maxSideLength: this.options.maxSideLength || 2000,
         ...this.options.detection
